@@ -10,9 +10,10 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.user.firstsqliteapp.R;
+import com.example.user.firstsqliteapp.database.DatabaseOperationStatus;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity{
     Button start_up_button;
     //var for Logcat
     private static final String TAG = MainActivity.class.getSimpleName();

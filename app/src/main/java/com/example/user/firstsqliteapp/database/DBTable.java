@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.util.Log;
+
 import com.example.user.firstsqliteapp.utils.TextUtils;
 
 import java.util.ArrayList;
@@ -13,6 +15,7 @@ import java.util.ArrayList;
  * User: Cici
  */
 public abstract class DBTable<T> {
+
     // FIELDS
     /**
      * The type of items this instance of the table is dealing with.
@@ -35,6 +38,9 @@ public abstract class DBTable<T> {
      * Reference to the creating context (typically the application context)
      */
     protected Context mContext;
+
+    //var for Logcat
+    private static final String TAG = DBTable.class.getSimpleName();
 
     // CONSTRUCTORS
 
@@ -132,7 +138,6 @@ public abstract class DBTable<T> {
      * Called to take any action on the item used to search for it's id
      */
     protected abstract T onPostFindId(T t, long _id);
-
     /**
      * Called before the specified item is deleted. Return true to allow the delete, false to prevent it.
      */
@@ -174,6 +179,12 @@ public abstract class DBTable<T> {
     protected void close() {
     }
 
+
+    /**
+     * The implementation will be made on each table and it will update object t1 with the new values from object t2.
+     */
+    protected abstract void updateItem(T t1, T t2);
+
     /**
      * The implementation will be made on each table and it will return an item with complete fields.
      */
@@ -183,6 +194,12 @@ public abstract class DBTable<T> {
      * The implementation will be made on each table and it will return a list of items with complete fields.
      */
     protected abstract ArrayList<T> findItems(T t);
+
+    /**
+     * The implementation will be made on each table and it will return a list of all items from the table.
+     */
+    protected abstract ArrayList<T> getAllItems();
+
 
     /**
      * Populate the given item from the given cursor, and return the item to allow method call chaining.
@@ -324,7 +341,6 @@ public abstract class DBTable<T> {
                 if (itemOk) {
                     resultsList.add(item);
                 }
-
                 return itemOk;
             }
         });
@@ -342,6 +358,7 @@ public abstract class DBTable<T> {
                 ContentValues values = populate(new ContentValues(), item);
                 if (values != null) {
                     long id = mDatabase.insert(mTableName, null, values);
+                    Log.d(TAG,"Inserted");
                     item = onPostInsert(item, id);
                 }
             }
@@ -351,6 +368,7 @@ public abstract class DBTable<T> {
         }
         return item;
     }
+
 
     /**
      * Method used to delete all the items in database.
@@ -375,13 +393,15 @@ public abstract class DBTable<T> {
                 ContentValues values = populate(new ContentValues(), item);
                 if (values != null) {
                     String whereClause;
+                    Log.d(TAG, "GetIdOfItem: "+getIdOf(item));  // OK
                     if (getIdOf(item) == -1) {
                         T completeItem = findItem(item);
                         whereClause = BaseColumns.ID + " = " + getIdOf(completeItem);
                     } else {
-                        whereClause = BaseColumns.ID + " = " + values.getAsString(BaseColumns.ID);
+                        whereClause = BaseColumns.ID + " = " + getIdOf(item);
                     }
                     int deletedItems = mDatabase.delete(mTableName, whereClause, null);
+                    Log.d(TAG, "DELETED: "+item.toString());
                     onPostDelete(item);
                 }
             }
@@ -418,9 +438,7 @@ public abstract class DBTable<T> {
                 if (cursor != null && cursor.moveToFirst()) {
                     long id = cursor.getInt(0);
                     onPostFindId(item, id);
-
                 }
-
             }
 
             mDatabase.setTransactionSuccessful();
@@ -430,6 +448,7 @@ public abstract class DBTable<T> {
 
         return item;
     }
+
 
 
 }

@@ -9,6 +9,7 @@ import com.example.user.firstsqliteapp.MyApp;
 import com.example.user.firstsqliteapp.data.User;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.IllegalFormatException;
 
 /**
@@ -50,17 +51,16 @@ public class DatabaseManager implements DatabaseListener {
         SQLiteDatabase database = SQLiteDatabase.openDatabase(path + databaseName, null, 0);
         database.beginTransaction();
         try {
-
             Cursor cursor = database.query(TABLE_NAME, null, null, null, null, null, null);
             DBTable table = DatabaseManager.getInstance().getTable(User.class);
             while (cursor.moveToNext()) {
-                User user = new User(cursor.getString(0), cursor.getString(1), cursor.getString(2));
+                User user = new User(cursor.getInt(0), cursor.getString(1),cursor.getString(2), cursor.getString(3));
                 table.insert(user);
             }
 
             database.setTransactionSuccessful();
 
-            //Delete databsae file
+            //Delete database file
             File databaseFile = new File(path, databaseName);
             databaseFile.delete();
         } finally {
@@ -91,7 +91,7 @@ public class DatabaseManager implements DatabaseListener {
     public <T> void insertItem(final DBTable table, final T item, final DatabaseOperationStatus callback) {
         Thread worker = new Thread(new Runnable() {
             @Override
-            public void run() {
+            public void run() { //async task, loader, executors service
                 try {
                     table.insert(item);
                 } catch (SQLiteException exception) {
@@ -109,6 +109,36 @@ public class DatabaseManager implements DatabaseListener {
         });
         worker.start();
     }
+
+    /**
+     * Method used to update an item in a database.
+     *
+     * @param table    The table in which the item is going to be inserted
+     * @param old_item     The item to update
+     * @param old_item     The item to update
+     * @param callback A callback to notify the status of the operation, and also to pass back the item inserted
+     */
+    public <T> void updateItem(final DBTable table, final T old_item, final T new_item, final DatabaseOperationStatus callback) {
+        Thread worker = new Thread(new Runnable() {
+            @Override
+            public void run() { //async task, loader, executors service
+                try {
+                    table.updateItem(old_item, new_item);
+                } catch (SQLiteException exception) {
+                    callback.onError(exception);
+                } catch (IllegalFormatException illegalFormatException) {
+                    callback.onError(illegalFormatException);
+                } catch (NullPointerException nullPointerException) {
+                    callback.onError(nullPointerException);
+                }
+                //If in the end everything is ok, just notify the user that the operation is complete
+                callback.onComplete(old_item);
+
+            }
+        });
+        worker.start();
+    }
+
 
     /**
      * Method used to find an item in a database.
@@ -130,7 +160,6 @@ public class DatabaseManager implements DatabaseListener {
                 } catch (NullPointerException nullPointerException) {
                     callback.onError(nullPointerException);
                 }
-
             }
         });
         worker.start();
@@ -161,6 +190,35 @@ public class DatabaseManager implements DatabaseListener {
         });
         worker.start();
     }
+
+
+    /**
+     * Method used to to get all the records from a table in a database.
+     *
+     * @param table    The table from which we want to get the items
+     * @param callback A callback to notify the status of the operation, and also to pass back the items found
+     */
+    public <T> void getAllItems(final DBTable table, final DatabaseOperationStatus callback) {
+        Thread worker = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    callback.onComplete(table.getAllItems());
+                } catch (SQLiteException exception) {
+                    callback.onError(exception);
+                } catch (IllegalFormatException illegalFormatException) {
+                    callback.onError(illegalFormatException);
+                } catch (NullPointerException nullPointerException) {
+                    callback.onError(nullPointerException);
+                }
+            }
+        });
+        worker.start();
+    }
+
+
+
+
 
     /**
      * Method used to delete an item from database.

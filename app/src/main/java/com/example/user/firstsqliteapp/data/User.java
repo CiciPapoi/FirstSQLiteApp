@@ -13,7 +13,14 @@ public class User {
 
     public User() {
      }
+    public User(long id, String username, String initials, String address) {
+        this.id = id;
+        this.username = username;
+        this.initials = initials;
+        this.address = address;
+    }
     public User( String username, String initials, String address) {
+
         this.username = username;
         this.initials = initials;
         this.address = address;

@@ -4,20 +4,28 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
-import android.text.TextUtils;
+//import android.text.TextUtils;
+import android.util.Log;
 
 import com.example.user.firstsqliteapp.data.User;
+import com.example.user.firstsqliteapp.database.AccessConstants;
 import com.example.user.firstsqliteapp.database.DBTable;
 import com.example.user.firstsqliteapp.database.UsersColumns;
+import com.example.user.firstsqliteapp.utils.TextUtils;
+
 
 import java.util.ArrayList;
+import java.util.Dictionary;
 
 /**
  * This class handles basic operations on the users table
  */
 public class UsersTable extends DBTable<User> implements UsersColumns {
+
+
         // STATIC FIELDS
-        private static final String TABLE_NAME = "ro_es";
+        private static final String TABLE_NAME = "users";
+        private static final String TAG = UsersTable.class.getSimpleName();
 
         // CONSTRUCTORS
         public UsersTable() {
@@ -29,6 +37,7 @@ public class UsersTable extends DBTable<User> implements UsersColumns {
         // ------------------------------------------------------------------------
         @Override
         protected User newItem() {
+
             return new User();
         }
 
@@ -69,7 +78,10 @@ public class UsersTable extends DBTable<User> implements UsersColumns {
             return user.getId();
         }
 
-        @Override
+
+
+
+    @Override
         public User populate(User user, Cursor cursor) {
             int iterator = 0;
             user.setId(cursor.getInt(iterator++));
@@ -82,39 +94,44 @@ public class UsersTable extends DBTable<User> implements UsersColumns {
 
         @Override
         public ContentValues populate(ContentValues values, User user) {
+
+            values.put(USR,user.getUsername());
+            values.put(ADDR, user.getAddress());
+            values.put(INIT, user.getInitials());
+
+            Log.d(TAG, "populate with Id: "+user.getId() + " name "+ user.getUsername());
             return values;
         }
 
         @Override
         protected User findItem(User user) {
-            User result = new User();
-            /*
             mDatabase.beginTransaction();
+            User result = new User();
 
             try {
                 String whereClause;
 
-                if (user.getUsername().length() > 0 && user.setInitials().length() > 0) {
+                if (user.getUsername()!=""&& user.getInitials() != "") {
                     //We have both columns available
                     whereClause = String.format(TextUtils.FORMAT_STRING_WHERE_CLAUSE_DOUBLE_COLUMNS,
-                            RO_WORD, DatabaseUtils.sqlEscapeString(user.getRoWord()),
-                            ES_WORD, DatabaseUtils.sqlEscapeString(user.getEsWord()));
+                            USR, DatabaseUtils.sqlEscapeString(user.getUsername()),
+                            INIT, DatabaseUtils.sqlEscapeString(user.getInitials()));
 
-                } else if (user.getRoWord().length() > 0 && user.getEsWord().length() == 0) {
+                } else if (user.getUsername()!="" && user.getInitials() == "") {
                     //We have just a ro word available
                     whereClause = String.format(TextUtils.FORMAT_STRING_WHERE_CLAUSE_SINGLE_COLUMN,
-                            RO_WORD, DatabaseUtils.sqlEscapeString(user.getRoWord()));
+                            USR, DatabaseUtils.sqlEscapeString(user.getUsername()));
 
                 } else {
                     //We have only es word
-                    whereClause = String.format(TextUtils.FORMAT_STRING_WHERE_CLAUSE_SINGLE_COLUMN,
-                            ES_WORD, DatabaseUtils.sqlEscapeString(user.getEsWord()));
-                }
 
+                    whereClause = String.format(TextUtils.FORMAT_STRING_WHERE_CLAUSE_SINGLE_COLUMN,
+                            USR, DatabaseUtils.sqlEscapeString(user.getUsername()));
+                }
 
                 Cursor cursor = mDatabase.query(mTableName, null, whereClause, null, null, null, null, null);
                 if (cursor != null && cursor.moveToFirst()) {
-                    result = new Dictionary(cursor.getInt(0), cursor.getString(1), cursor.getString(2));
+                    result = new User(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3));
                 }
                 if (cursor != null) {
                     cursor.close();
@@ -123,53 +140,64 @@ public class UsersTable extends DBTable<User> implements UsersColumns {
             } finally {
                 mDatabase.endTransaction();
             }
-            */
+
             return result;
+
+
         }
 
+    @Override
+    protected void updateItem(User user1, User user2) {
+        mDatabase.beginTransaction();
+
+        try {
+            String whereClause;
+
+            if (user1.getId() != -1) {
+                //We have the id column
+                whereClause = String.format(TextUtils.FORMAT_STRING_WHERE_CLAUSE_SINGLE_COLUMN,
+                        ID, DatabaseUtils.sqlEscapeString(String.valueOf(user1.getId())));
+            }
+
+            String strFilter = "_id=" + 4;
+            ContentValues args = new ContentValues();
+            args.put(ADDR, "new address");
+            args.put(USR, "new user");
+            mDatabase.update(mTableName, args, strFilter, null);
+            mDatabase.setTransactionSuccessful();
+        } finally {
+            mDatabase.endTransaction();
+        }
+    }
 
     @Override
         protected ArrayList<User> findItems(User user) {
             ArrayList<User> results = new ArrayList<User>();
-            /*
+
+            return results;
+        }
+
+    @Override
+    protected ArrayList<User> getAllItems() {
+        ArrayList<User> results = new ArrayList<User>();
+
             mDatabase.beginTransaction();
-
             try {
-                String whereClause;
-
-                if (user.getEsWord().length() > 0 && user.getRoWord().length() > 0) {
-                    //We have both columns available
-                    whereClause = String.format(TextUtils.FORMAT_STRING_WHERE_CLAUSE_LIKE_DOUBLE_COLUMNS,
-                            RO_WORD, DatabaseUtils.sqlEscapeString(user.getRoWord() + "%"),
-                            ES_WORD, DatabaseUtils.sqlEscapeString(user.getEsWord() + "%"));
-
-                } else if (user.getRoWord().length() > 0 && user.getEsWord().length() == 0) {
-                    //We have just a ro word available
-                    whereClause = String.format(TextUtils.FORMAT_STRING_WHERE_CLAUSE_LIKE_SINGLE_COLUMN,
-                            RO_WORD, DatabaseUtils.sqlEscapeString(user.getRoWord() + "%"));
-
-                } else {
-                    //We have only es word
-                    whereClause = String.format(TextUtils.FORMAT_STRING_WHERE_CLAUSE_LIKE_SINGLE_COLUMN,
-                            ES_WORD, DatabaseUtils.sqlEscapeString(user.getEsWord() + "%"));
-                }
-
-
-                Cursor cursor = mDatabase.query(mTableName, null, whereClause, null, null, null, null, AccessConstants.DB_NUMBER_OF_ITEMS_RETRIEVED);
+                Cursor cursor = mDatabase.query(mTableName, null, null, null, null, null, null, null);
+                cursor.moveToFirst();
                 if (cursor != null) {
-                    while (cursor.moveToNext()) {
-                        results.add(new Dictionary(cursor.getInt(0), cursor.getString(1), cursor.getString(2)));
+                    while (!cursor.isAfterLast()) {
+                        results.add(new User(cursor.getInt(0),cursor.getString(1), cursor.getString(2), cursor.getString(3)));
+                        Log.d(TAG,cursor.getString(1)+" "+cursor.getString(2)+" "+cursor.getString(3));
+                        cursor.moveToNext();
                     }
                 }
-
-
                 mDatabase.setTransactionSuccessful();
             } finally {
                 mDatabase.endTransaction();
             }
-        */
-            return results;
-        }
+        return results;
+    }
 
     @Override
     protected String[] getCreateTableSql(Context context) throws Exception {
@@ -180,10 +208,6 @@ public class UsersTable extends DBTable<User> implements UsersColumns {
     protected String[] getUpgradeTableSql(Context context, int oldVersion, int newVersion) throws Exception {
         return new String[0];
     }
-
-
-
-
 
     //***************************************************
 }

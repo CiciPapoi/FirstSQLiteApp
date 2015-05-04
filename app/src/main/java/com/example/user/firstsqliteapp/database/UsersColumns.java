@@ -4,7 +4,7 @@ package com.example.user.firstsqliteapp.database;
  * Created by user on 16.04.2015.
  */
 public interface UsersColumns extends BaseColumns {
-    String USR =  "username";
+    String USR =  "name";
     String INIT = "initials";
     String ADDR = "address";
 

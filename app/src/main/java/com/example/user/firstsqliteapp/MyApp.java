@@ -9,7 +9,7 @@ import com.example.user.firstsqliteapp.database.DatabaseManager;
  */
 public class MyApp extends Application {
 
-     private static MyApp sInstance = null;
+    private static MyApp sInstance = null;
 
     public static MyApp getInstance() {
         return sInstance;
@@ -25,7 +25,6 @@ public class MyApp extends Application {
      */
     private void ensureDatabase() {
         DatabaseManager.getInstance().initDatabase(getApplicationContext());
-
     }
 
     @Override
