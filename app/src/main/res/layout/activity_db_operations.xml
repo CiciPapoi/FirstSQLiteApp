@@ -26,6 +26,16 @@
         android:layout_alignParentRight="true"
         android:onClick="selectBetweenFragments"
     />
+    <Button
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="20dp"
+        android:id="@+id/second_select_button_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select2"
+        android:layout_toRightOf="@id/select_button_id"
+        />
 
     <FrameLayout
         android:orientation="vertical"

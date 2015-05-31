@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:padding="20dp"
     >
-
     <TextView
         android:paddingRight="30dp"
         android:id="@+id/item_id"
@@ -35,5 +34,4 @@
         android:layout_marginLeft="10dp"
         android:text="Address"
         android:textAppearance="?android:attr/textAppearanceLarge" />
-
 </LinearLayout>

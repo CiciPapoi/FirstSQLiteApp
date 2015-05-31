@@ -75,7 +75,7 @@ public class InsertFragment extends Fragment implements DatabaseOperationStatus 
 
     @Override
     public void onComplete(ArrayList result) {
-        final ArrayList<Dictionary> res = (ArrayList<Dictionary>) result;
+
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {

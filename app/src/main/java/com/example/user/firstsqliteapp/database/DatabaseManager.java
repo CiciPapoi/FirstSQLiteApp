@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.util.Log;
 
 import com.example.user.firstsqliteapp.MyApp;
 import com.example.user.firstsqliteapp.data.User;
@@ -28,6 +29,9 @@ public class DatabaseManager implements DatabaseListener {
 
 
     private static DatabaseManager sInstance = new DatabaseManager();
+
+    //var for Logcat
+    private static final String TAG = DatabaseManager.class.getSimpleName();
 
     public static final DatabaseManager getInstance() {
         return sInstance;
@@ -78,6 +82,8 @@ public class DatabaseManager implements DatabaseListener {
     }
 
     public void initDatabase(Context context) {
+
+
         mApplicationDatabase = new ApplicationDB(context, this);
     }
 
@@ -202,6 +208,8 @@ public class DatabaseManager implements DatabaseListener {
         Thread worker = new Thread(new Runnable() {
             @Override
             public void run() {
+                Log.d(TAG, "SUNT IN RUN");
+
                 try {
                     callback.onComplete(table.getAllItems());
                 } catch (SQLiteException exception) {
