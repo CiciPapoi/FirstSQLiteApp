@@ -60,15 +60,11 @@ public class ItemsListActivity extends ListActivity implements DatabaseOperation
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_items);
+
+       // setContentView(R.layout.activity_items);
 
 
         DatabaseManager.getInstance().getAllItems(DatabaseManager.getInstance().getTable(Item.class), this);
-        Log.d(TAG, "HELLO!!");
-
-//        mAdapter = new SelectionAdapter(this,
-//                R.layout.photo_item, R.id.item_id, data);
-//        setListAdapter(mAdapter);
 
         /**
          * go to next activity for detail image
@@ -78,16 +74,11 @@ public class ItemsListActivity extends ListActivity implements DatabaseOperation
             @Override
             public void onItemClick(AdapterView<?> parent, View v,
                                     final int position, long id) {
-//                imageName = arrayOfItems.get(position).getPhoto_path();
                 imagePath = arrayOfItems.get(position).getPhoto_path();
                 imageId = arrayOfItems.get(position).get_id();
 
                 Log.d(TAG ,"before sending: " + imagePath + "-" + imageId);
 
-                // convert byte / string to bitmap
-                //-------BYTE------------
-//                ByteArrayInputStream imageStream = new ByteArrayInputStream(imageName);
-//                theImage = BitmapFactory.decodeStream(imageStream);
 
                 //--------URI-------------
                 FileInputStream in = null;
@@ -137,6 +128,9 @@ public class ItemsListActivity extends ListActivity implements DatabaseOperation
                 return true;
             }
 
+            /*
+                Decide the action for buttons in menu actionbar
+             */
             @Override
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
                 // TODO Auto-generated method stub
@@ -150,6 +144,9 @@ public class ItemsListActivity extends ListActivity implements DatabaseOperation
                 return true;
             }
 
+                /*
+                    multiple selection effects
+                 */
             @Override
             public void onItemCheckedStateChanged(ActionMode mode, int position,
                                                   long id, boolean checked) {
@@ -166,6 +163,9 @@ public class ItemsListActivity extends ListActivity implements DatabaseOperation
             }
         });
 
+        /*
+                LongPress on an intem effect
+         */
         getListView().setOnItemLongClickListener(new OnItemLongClickListener() {
 
             @Override
@@ -179,6 +179,19 @@ public class ItemsListActivity extends ListActivity implements DatabaseOperation
         });
     }
 
+    @Override
+    public void onStart(){
+        super.onStart();
+
+        //get new list of items each time the activity is restarted
+
+        DatabaseManager.getInstance().getAllItems(DatabaseManager.getInstance().getTable(Item.class), this);
+
+    }
+
+    /*
+        Adapter definition
+     */
     private class SelectionAdapter extends ArrayAdapter<Item> {
 
         private class ViewHolder {
@@ -250,10 +263,6 @@ public class ItemsListActivity extends ListActivity implements DatabaseOperation
             set image: convert byte to bitmap take from Item class
              */
 
-            //-----------BYTE METHOD---------------
-//            byte[] outImage = item.getPhoto_path();
-//            ByteArrayInputStream imageStream = new ByteArrayInputStream(outImage);
-//            Bitmap theImage = BitmapFactory.decodeStream(imageStream);
 
             //-----------URI METHOD-------------
 
@@ -286,6 +295,9 @@ public class ItemsListActivity extends ListActivity implements DatabaseOperation
 
         Log.d(TAG, String.valueOf(result.size()));
 
+        /*
+            Setting the adapter on the list
+         */
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {

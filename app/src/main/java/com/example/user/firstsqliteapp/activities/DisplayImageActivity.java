@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.example.user.firstsqliteapp.MyApp;
 import com.example.user.firstsqliteapp.R;
 import com.example.user.firstsqliteapp.data.Item;
 import com.example.user.firstsqliteapp.database.DatabaseManager;
@@ -56,11 +57,14 @@ public class DisplayImageActivity extends Activity implements DatabaseOperationS
                     Item deletedItem = new Item();
                     deletedItem.set_id(imageId);
 
+                    MyApp myapp = MyApp.getInstance();
+                    myapp.myGlobalArray.remove(new Integer((int)deletedItem.getCategory_id()));
+
                     DatabaseManager.getInstance().deleteItem(DatabaseManager.getInstance().getTable(Item.class),deletedItem,DisplayImageActivity.this);
 
                     // /after deleting data go to main page
                     Intent i = new Intent(DisplayImageActivity.this,
-                            DBOperationsActivity.class);
+                            ItemsListActivity.class);
                     startActivity(i);
                     finish();
                 }

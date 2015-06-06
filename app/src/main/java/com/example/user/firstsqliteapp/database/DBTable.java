@@ -200,7 +200,6 @@ public abstract class DBTable<T> {
      */
     protected abstract ArrayList<T> getAllItems();
 
-
     /**
      * Populate the given item from the given cursor, and return the item to allow method call chaining.
      */

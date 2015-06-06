@@ -24,12 +24,5 @@
         android:id="@+id/idBtnTakePicture"
         android:text="Take picture"
         />
-    <Button
-        android:layout_width="120dp"
-        android:layout_height="50dp"
-        android:id="@+id/idBtnTakePicture2"
-        android:text="Take picture"
-        />
-
 
 </LinearLayout>

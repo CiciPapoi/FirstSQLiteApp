@@ -83,7 +83,6 @@ public class DatabaseManager implements DatabaseListener {
 
     public void initDatabase(Context context) {
 
-
         mApplicationDatabase = new ApplicationDB(context, this);
     }
 
@@ -223,9 +222,6 @@ public class DatabaseManager implements DatabaseListener {
         });
         worker.start();
     }
-
-
-
 
 
     /**

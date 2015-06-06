@@ -181,21 +181,21 @@ public class ItemsTable extends DBTable<Item> implements ItemsColumns {
     @Override
     protected ArrayList<Item> getAllItems() {
         ArrayList<Item> results = new ArrayList<Item>();
-        Log.d(TAG,"Entered in GetAll");
+        //Log.d(TAG,"Entered in GetAll");
 
         mDatabase.beginTransaction();
         try {
             Cursor cursor = mDatabase.query(mTableName, null, null, null, null, null, null, null);
-            Log.d(TAG, "After query");
+            //Log.d(TAG, "After query");
             cursor.moveToFirst();
             if (cursor != null) {
                 while (!cursor.isAfterLast()) {
                     results.add(new Item(cursor.getInt(0), cursor.getInt(1), cursor.getInt(2), cursor.getString(3), cursor.getString(4), cursor.getString(5)));
-                    Log.d(TAG, "id:" + cursor.getString(0) + "  cat_id:" + cursor.getString(1) + "  style_id:" + cursor.getString(2) + "  registered:" + cursor.getString(3) + "  last_used:" + cursor.getString(4) + "  URI:" + cursor.getString(5) );
+              //      Log.d(TAG, "id:" + cursor.getString(0) + "  cat_id:" + cursor.getString(1) + "  style_id:" + cursor.getString(2) + "  registered:" + cursor.getString(3) + "  last_used:" + cursor.getString(4) + "  URI:" + cursor.getString(5) );
                     cursor.moveToNext();
                 }
             } else {
-                Log.d(TAG, "cursor is null");
+                //Log.d(TAG, "cursor is null");
             }
             mDatabase.setTransactionSuccessful();
         }catch(Exception e){

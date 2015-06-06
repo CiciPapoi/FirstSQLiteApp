@@ -39,42 +39,12 @@ public class DBOperationsActivity extends Activity implements DatabaseOperationS
     private static final int CAMERA_REQUEST = 1;
     private static final int PICK_FROM_GALLERY = 2;
 
-
     //var for Logcat
     private static final String TAG = DBOperationsActivity.class.getSimpleName();
 
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_db_operations);
-
-        // -----------------------  DB STUFF ------------------------
-
-        // FIRST : check if the database is already created
-
-        //For singleton class
-//       myDbHelper = DatabaseOpenHelper.getInstance(this);
-//
-//
-//       // myDbHelper = new DatabaseOpenHelper(this);
-//
-//        try {
-//            Log.d("!!!!!!!", "I am trying to create the Database");
-//            // check if database exists in app path, if not copy it from assets
-//            myDbHelper.create();
-//        } catch (IOException ioe) {
-//            throw new Error("Unable to create database");
-//        }
-//
-//        // Open it:
-//        try {
-//            // open the database
-//            myDbHelper.open();
-//            myDbHelper.getWritableDatabase();
-//        } catch (SQLiteException e) {
-//            new Error("Unable to open database");
-//        }
-
-
 
         /*
                 INSERT button action    -- old
@@ -129,57 +99,57 @@ public class DBOperationsActivity extends Activity implements DatabaseOperationS
     }
 
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode != RESULT_OK)
-            return;
-
-        switch (requestCode) {
-            case CAMERA_REQUEST:
-
-                Bundle extras = data.getExtras();
-
-                if (extras != null) {
-                    Bitmap yourImage = extras.getParcelable("data");
-                    // convert bitmap to byte
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    yourImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
-
-                    byte imageInByte[] = stream.toByteArray();
-                   // Inserting Items
-                    Log.d(TAG, "Inserting ..");
-
-                    Item item = new Item (10,1,1,"12.01.2012", "12.01.2012","" );
-                    DatabaseManager.getInstance().insertItem(DatabaseManager.getInstance().getTable(Item.class),item,this);
-                    Intent i = new Intent(DBOperationsActivity.this, DBOperationsActivity.class);
-                    startActivity(i);
-                    finish();
-
-                }
-                break;
-            case PICK_FROM_GALLERY:
-                Bundle extras2 = data.getExtras();
-
-                if (extras2 != null) {
-                    Bitmap yourImage = extras2.getParcelable("data");
-                    // convert bitmap to byte
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    yourImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                    byte imageInByte[] = stream.toByteArray();
-                    Log.e(TAG, "before conversion"+imageInByte.toString());
-
-                    // Inserting Item
-                    Log.d("TAG", "Inserting from Gallery..");
-                    Item item = new Item (1,1,"12.01.2012", "12.01.2014","" );
-                    DatabaseManager.getInstance().insertItem(DatabaseManager.getInstance().getTable(Item.class),item,this);
-                    Intent i = new Intent(DBOperationsActivity.this,
-                            DBOperationsActivity.class);
-                    startActivity(i);
-                    finish();
-                }
-
-                break;
-        }
-    }
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (resultCode != RESULT_OK)
+//            return;
+//
+//        switch (requestCode) {
+//            case CAMERA_REQUEST:
+//
+//                Bundle extras = data.getExtras();
+//
+//                if ( extras != null ) {
+//                    Bitmap yourImage = extras.getParcelable("data");
+//                    // convert bitmap to byte
+//                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//                    yourImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
+//
+//                    byte imageInByte[] = stream.toByteArray();
+//                   // Inserting Items
+//                    Log.d(TAG, "Inserting ..");
+//
+//                    Item item = new Item (10,1,1,"12.01.2012", "12.01.2012","" );
+//                    DatabaseManager.getInstance().insertItem(DatabaseManager.getInstance().getTable(Item.class),item,this);
+//                    Intent i = new Intent(DBOperationsActivity.this, DBOperationsActivity.class);
+//                    startActivity(i);
+//                    finish();
+//
+//                }
+//                break;
+//            case PICK_FROM_GALLERY:
+//                Bundle extras2 = data.getExtras();
+//
+//                if (extras2 != null) {
+//                    Bitmap yourImage = extras2.getParcelable("data");
+//                    // convert bitmap to byte
+//                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//                    yourImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
+//                    byte imageInByte[] = stream.toByteArray();
+//                    Log.e(TAG, "before conversion"+imageInByte.toString());
+//
+//                    // Inserting Item
+//                    Log.d("TAG", "Inserting from Gallery..");
+//                    Item item = new Item (1,1,"12.01.2012", "12.01.2014","" );
+//                    DatabaseManager.getInstance().insertItem(DatabaseManager.getInstance().getTable(Item.class),item,this);
+//                    Intent i = new Intent(DBOperationsActivity.this,
+//                            DBOperationsActivity.class);
+//                    startActivity(i);
+//                    finish();
+//                }
+//
+//                break;
+//        }
+//    }
 
 
     /**

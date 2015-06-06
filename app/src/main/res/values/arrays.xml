@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="categories_array">
+        <![CDATA["Accessories","Blouses","Dresses","Jackets&Coats","Tops","Trousers","Shorts","Shoes","Skirts"]]></string-array>
+</resources>

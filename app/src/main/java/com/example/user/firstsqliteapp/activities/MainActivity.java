@@ -28,7 +28,7 @@ public class MainActivity extends ActionBarActivity{
             @Override
             public void onClick(View v) {
                 //Start DbOperationsActivity class
-                Intent myIntent = new Intent( MainActivity.this, DBOperationsActivity.class); // (action to be performed, data to operate with)
+                Intent myIntent = new Intent( MainActivity.this, FirstActivity.class); // (action to be performed, data to operate with)
                 startActivity(myIntent);
             }
         });

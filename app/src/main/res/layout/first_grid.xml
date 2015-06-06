@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingRight="30dp"
+    android:paddingLeft="30dp"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="3">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Your wordrobe sugestion: "
+            android:textSize="20dp"
+            android:fontFamily="@string/context_menu_item_1"
+            android:gravity="center"
+
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="2.8"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:spacing="15dp"
+            android:id="@+id/image1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
+            android:layout_weight="2"
+            android:tag="1"/>
+
+        <ImageView
+            android:spacing="15dp"
+            android:id="@+id/image2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/holo_green_light"
+            android:layout_weight="2"
+            android:tag="2"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="2.8"
+        android:orientation="horizontal"
+        >
+
+        <ImageView
+            android:spacing="15dp"
+            android:id="@+id/image3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/holo_blue_light"
+            android:layout_weight="2"
+            android:tag="3"/>
+
+        <ImageView
+            android:id="@+id/image4"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/holo_red_light"
+            android:layout_weight="2"
+            android:tag="4"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="3">
+
+    <Button
+        android:layout_margin="20dp"
+        style="@style/Base.Theme.AppCompat.Light.DarkActionBar"
+        android:id="@+id/firstAddButton"
+        android:layout_width="90dp"
+        android:layout_height="40dp"
+        android:text="Add"
+        />
+
+    <Button
+        android:layout_margin="20dp"
+        style="@style/Base.Theme.AppCompat.Light.DarkActionBar"
+        android:id="@+id/listItemsButton"
+        android:layout_width="140dp"
+        android:layout_height="40dp"
+        android:text="Go to galerry -->"
+        />
+
+    </LinearLayout>
+
+</LinearLayout>
