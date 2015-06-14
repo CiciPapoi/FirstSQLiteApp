@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.example.user.firstsqliteapp.MyApp;
 import com.example.user.firstsqliteapp.R;
+import com.example.user.firstsqliteapp.data.Category;
 import com.example.user.firstsqliteapp.data.Item;
 import com.example.user.firstsqliteapp.database.DatabaseManager;
 import com.example.user.firstsqliteapp.database.DatabaseOperationStatus;
@@ -42,11 +43,12 @@ import java.util.ArrayList;
 public class FirstActivity extends Activity implements DatabaseOperationStatus {
 
     private ArrayList<Item> arrayOfItems;
+    private ArrayList<Category> arrayOfCategories;
     ConversionFct convertor;
     RandomGenerator randomGenerator;
     Bitmap rotatedBitmap;
 
-    MyApp myapp = MyApp.getInstance();
+
 
 
     //var for Logcat
@@ -65,6 +67,7 @@ public class FirstActivity extends Activity implements DatabaseOperationStatus {
         setContentView(R.layout.first_grid);
 
         arrayOfItems = new ArrayList<Item>();
+        arrayOfCategories = new ArrayList<Category>();
 
         //initialize help functions objects
         convertor = new ConversionFct();
@@ -80,8 +83,6 @@ public class FirstActivity extends Activity implements DatabaseOperationStatus {
         imageview3 = (ImageView) findViewById(R.id.image3);
         imageview4 = (ImageView) findViewById(R.id.image4);
         addButton = (Button) findViewById(R.id.firstAddButton);
-
-        //listItemsButton = (Button) findViewById(R.id.listItemsButton);
 
 
 
@@ -112,9 +113,14 @@ public class FirstActivity extends Activity implements DatabaseOperationStatus {
         super.onStart();
 
         /*
+            Get all Category elements from db and put them in the ArrayList
+         */
+        DatabaseManager.getInstance().getAllItems(DatabaseManager.getInstance().getTable(Category.class), this);
+
+
+        /*
             Get all Item elements from db and put them in the ArrayList
          */
-
         DatabaseManager.getInstance().getAllItems(DatabaseManager.getInstance().getTable(Item.class), this);
 
         Log.d(TAG, "FirstActivity: onStart()");
@@ -128,90 +134,110 @@ public class FirstActivity extends Activity implements DatabaseOperationStatus {
 
     @Override
     public void onComplete(final ArrayList result) {
-        arrayOfItems = result;
+
+
+
+        //---------------Items case----------------
 
         /*
               Fill the views with images
         */
-        if ( result.size() != 0) {
-            this.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    //Fill image1 ( upper side clothing items )
-                    Item item;
-                    Bitmap bmp;
-                    ArrayList<Integer> list1 = new ArrayList<Integer>();
-                    list1.add(new Integer(4));
-                    list1.add(new Integer(6));
-                    //try getting a first random item and then check if it is of desired category
-                    item = randomGenerator.anyItem(arrayOfItems);
-                    if (convertor.existsCategory(list1) == false) {
-
-                    } else {
-                        while (item.getCategory_id() != 4 && item.getCategory_id() != 6)
+            if (result.size() != 0) {
+                Object o = result.get(0);
+                //---------------Items case----------------
+                if (o instanceof Item) {
+                    arrayOfItems = result;
+                    this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //Fill image1 ( upper side clothing items )
+                            Item item;
+                            Bitmap bmp;
+                            ArrayList<Integer> list1 = new ArrayList<Integer>();
+                            list1.add(new Integer(4));
+                            list1.add(new Integer(6));
+                            //try getting a first random item and then check if it is of desired category
                             item = randomGenerator.anyItem(arrayOfItems);
-                        bmp = convertor.pathToBmp(item.getPhoto_path());
-                        rotatedBitmap = convertor.getBmpRotated(item, bmp);
-                        imageview1.setImageBitmap(rotatedBitmap);
+                            if (convertor.existsCategory(list1, arrayOfCategories) == false) {
 
-                    }
+                            } else {
+                                while (item.getCategory_id() != 4 && item.getCategory_id() != 6)
+                                    item = randomGenerator.anyItem(arrayOfItems);
+                                bmp = convertor.pathToBmp(item.getPhoto_path());
+                                rotatedBitmap = convertor.getBmpRotated(item, bmp);
+                                imageview1.setImageBitmap(rotatedBitmap);
 
-                    // Fill imageview2
+                            }
 
-                    ArrayList<Integer> list2 = new ArrayList<Integer>();
-                    list2.add(new Integer(1));
-                    //try getting a first random item and then check if it is of desired category
-                    item = randomGenerator.anyItem(arrayOfItems);
-                    if (convertor.existsCategory(list2) == false) {
+                            // Fill imageview2
 
-                    } else {
-                        while (item.getCategory_id() != 1)
+                            ArrayList<Integer> list2 = new ArrayList<Integer>();
+                            list2.add(new Integer(1));
+                            //try getting a first random item and then check if it is of desired category
                             item = randomGenerator.anyItem(arrayOfItems);
-                        bmp = convertor.pathToBmp(item.getPhoto_path());
-                        rotatedBitmap = convertor.getBmpRotated(item, bmp);
-                        imageview2.setImageBitmap(rotatedBitmap);
+                            if (convertor.existsCategory(list2,arrayOfCategories) == false) {
 
-                    }
+                            } else {
+                                while (item.getCategory_id() != 1)
+                                    item = randomGenerator.anyItem(arrayOfItems);
+                                bmp = convertor.pathToBmp(item.getPhoto_path());
+                                rotatedBitmap = convertor.getBmpRotated(item, bmp);
+                                imageview2.setImageBitmap(rotatedBitmap);
 
-                    // Fill imageview3
+                            }
 
-                    ArrayList<Integer> list3 = new ArrayList<Integer>();
-                    list3.add(new Integer(2));
-                    list3.add(new Integer(3));
-                    list3.add(new Integer(5));
-                    //try getting a first random item and then check if it is of desired category
-                    item = randomGenerator.anyItem(arrayOfItems);
-                    if (convertor.existsCategory(list3) == false) {
+                            // Fill imageview3
 
-                    } else {
-                        while (item.getCategory_id() != 2 && item.getCategory_id() != 3 && item.getCategory_id() != 5)
+                            ArrayList<Integer> list3 = new ArrayList<Integer>();
+                            list3.add(new Integer(2));
+                            list3.add(new Integer(3));
+                            list3.add(new Integer(5));
+                            //try getting a first random item and then check if it is of desired category
+                            item = randomGenerator.anyItem(arrayOfItems );
+                            if (convertor.existsCategory(list3,arrayOfCategories) == false) {
+
+                            } else {
+                                while (item.getCategory_id() != 2 && item.getCategory_id() != 3 && item.getCategory_id() != 5)
+                                    item = randomGenerator.anyItem(arrayOfItems);
+                                bmp = convertor.pathToBmp(item.getPhoto_path());
+                                rotatedBitmap = convertor.getBmpRotated(item, bmp);
+                                imageview3.setImageBitmap(rotatedBitmap);
+
+                            }
+
+                            // Fill imageview4
+
+                            ArrayList<Integer> list4 = new ArrayList<Integer>();
+                            list4.add(new Integer(9));
+                            //try getting a first random item and then check if it is of desired category
                             item = randomGenerator.anyItem(arrayOfItems);
-                        bmp = convertor.pathToBmp(item.getPhoto_path());
-                        rotatedBitmap = convertor.getBmpRotated(item, bmp);
-                        imageview3.setImageBitmap(rotatedBitmap);
+                            if (convertor.existsCategory(list4, arrayOfCategories) == false) {
 
-                    }
+                            } else {
+                                while (item.getCategory_id() != 9)
+                                    item = randomGenerator.anyItem(arrayOfItems);
+                                bmp = convertor.pathToBmp(item.getPhoto_path());
+                                rotatedBitmap = convertor.getBmpRotated(item, bmp);
+                                imageview1.setImageBitmap(rotatedBitmap);
 
-                    // Fill imageview4
+                            }
 
-                    ArrayList<Integer> list4 = new ArrayList<Integer>();
-                    list4.add(new Integer(9));
-                    //try getting a first random item and then check if it is of desired category
-                    item = randomGenerator.anyItem(arrayOfItems);
-                    if (convertor.existsCategory(list4) == false) {
+                        }
+                    });
+                }//end if instanceof
+            else if (o instanceof Category){
+                //-----------------Category case----------------
+                    this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            arrayOfCategories = result;
 
-                    } else {
-                        while (item.getCategory_id() != 1)
-                            item = randomGenerator.anyItem(arrayOfItems);
-                        bmp = convertor.pathToBmp(item.getPhoto_path());
-                        rotatedBitmap = convertor.getBmpRotated(item, bmp);
-                        imageview1.setImageBitmap(rotatedBitmap);
+                        }
+                    });
 
-                    }
+            }
+            }
 
-                }
-            });
-        }//end if
     }
 
     @Override

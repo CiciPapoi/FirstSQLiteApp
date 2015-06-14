@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.example.user.firstsqliteapp.MyApp;
 import com.example.user.firstsqliteapp.R;
+import com.example.user.firstsqliteapp.data.Category;
 import com.example.user.firstsqliteapp.data.Item;
 import com.example.user.firstsqliteapp.database.DatabaseManager;
 import com.example.user.firstsqliteapp.database.DatabaseOperationStatus;
@@ -184,12 +185,18 @@ public class CameraActivity extends Activity implements DatabaseOperationStatus{
                             picture.setImageBitmap(bmp);
                             //Create the object
                             Item newItem = new Item(category_bd, 1, name_date, null, image_path);
-                            //insert in the database
 
-                            MyApp myapp = MyApp.getInstance();
-                            myapp.myGlobalArray.add(category_bd);
+//                            MyApp myapp = MyApp.getInstance();
+//                            myapp.myGlobalArray.add(category_bd);
 
+
+                            //Insert the item in database
                             DatabaseManager.getInstance().insertItem(DatabaseManager.getInstance().getTable(Item.class), newItem, CameraActivity.this);
+
+                            //Update category in database
+                            Category oldCat = new Category(category_bd);
+
+                            DatabaseManager.getInstance().updateItem(DatabaseManager.getInstance().getTable(Category.class), oldCat ,null,  CameraActivity.this);
 
                         }
                     });

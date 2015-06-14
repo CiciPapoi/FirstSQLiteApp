@@ -7,8 +7,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.example.user.firstsqliteapp.data.Category;
 import com.example.user.firstsqliteapp.data.Item;
 import com.example.user.firstsqliteapp.data.User;
+import com.example.user.firstsqliteapp.database.tables.CategoryTable;
 import com.example.user.firstsqliteapp.database.tables.ItemsTable;
 import com.example.user.firstsqliteapp.database.tables.UsersTable;
 
@@ -54,6 +56,7 @@ public class ApplicationDB extends SQLiteOpenHelper {
         // Save a mapping between dto objects and their storage table
         sTables.put(User.class, new UsersTable());
         sTables.put(Item.class, new ItemsTable());
+        sTables.put(Category.class, new CategoryTable());
 
     }
 

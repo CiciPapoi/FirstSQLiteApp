@@ -6,7 +6,9 @@ import android.graphics.Matrix;
 import android.media.ExifInterface;
 
 import com.example.user.firstsqliteapp.MyApp;
+import com.example.user.firstsqliteapp.data.Category;
 import com.example.user.firstsqliteapp.data.Item;
+import com.example.user.firstsqliteapp.database.DatabaseManager;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -60,12 +62,15 @@ public class ConversionFct {
         return rotatedBitmap;
     }
 
-    public boolean existsCategory(ArrayList<Integer> arrayOfCategories) {
+    public boolean existsCategory(ArrayList<Integer> categoriesToCheck, ArrayList<Category> DBCategories) {
+
+   //     ArrayList<Category> categoryArray = DatabaseManager.getInstance().getAllItems(DatabaseManager.getInstance().getTable(Category.class), );
         boolean ok = false;
-        for (int c : arrayOfCategories) {
-            if (myapp.myGlobalArray.contains(c))
-                ok = true;
-        }
+        for (int i : categoriesToCheck)
+            for ( Category c : DBCategories )
+                if (c.getId() == i)
+                    if(c.getNritems() > 0 )
+                        ok = true;
         return ok;
     }
 }

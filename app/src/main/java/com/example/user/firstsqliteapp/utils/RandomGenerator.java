@@ -23,7 +23,7 @@ public class RandomGenerator
             return null;
 
         int index = randomGenerator.nextInt(catalogue.size());
-        Item item = catalogue.get(index);
+        Item item = (Item) catalogue.get(index);
         return item;
     }
 }
