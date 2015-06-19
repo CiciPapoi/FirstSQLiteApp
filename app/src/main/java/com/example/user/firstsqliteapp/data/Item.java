@@ -11,6 +11,10 @@ public class Item implements Parcelable{
     private long category_id;
     private int style_id;
     private String register_date;
+    private String last_used_date;
+    private String photo_path;
+    private String colors;
+    private String matches;
 
     @Override
     public String toString() {
@@ -25,11 +29,6 @@ public class Item implements Parcelable{
                 ", matches='" + matches + '\'' +
                 '}';
     }
-
-    private String last_used_date;
-    private String photo_path;
-    private String colors;
-    private String matches;
 
 
 

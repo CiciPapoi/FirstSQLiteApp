@@ -17,7 +17,9 @@ import com.example.user.firstsqliteapp.database.DatabaseOperationStatus;
 import com.example.user.firstsqliteapp.database.tables.ItemsTable;
 
 import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by user on 17.06.2015.
@@ -37,6 +39,11 @@ public class Outfit extends Activity implements DatabaseOperationStatus{
     //var for Logcat
     private static final String TAG = Outfit.class.getSimpleName();
 
+
+    public String dateToString(Date date, String format) {
+        SimpleDateFormat df = new SimpleDateFormat(format);
+        return df.format(date);
+    }
 
 
     @Override
@@ -67,14 +74,14 @@ public class Outfit extends Activity implements DatabaseOperationStatus{
         /*
                 Get the array of items
          */
-        ArrayList<Item> ps =  intent.getParcelableArrayListExtra("array");
+       ArrayList<Item> ps =  intent.getParcelableArrayListExtra("array");
         int k = 0;
         for (Object i : ps) {
             arrayOfItems.add((Item)i);
             k++;
         }
 
-        /*
+         /*
                 Ids of items of outfit selected
          */
         item1 = new Item();
@@ -86,7 +93,28 @@ public class Outfit extends Activity implements DatabaseOperationStatus{
         item4 = new Item();
         item4.set_id(imageId4);
 
+
+
         current = 1;  newitem = new Item();
+
+        for ( Item item : arrayOfItems ) {
+            if ( item.get_id() == item1.get_id() ) {
+                newitem.setCategory_id(item.getCategory_id());
+                newitem.setStyle_id(item.getStyle_id());
+                newitem.setRegister_date(item.getRegister_date());
+                newitem.setLast_used_date(dateToString(new Date(), "yyyy-MM-dd-hh-mm-ss"));
+                newitem.setPhoto_path(item.getPhoto_path());
+                newitem.setColors(item.getColors());
+
+                if ( !item.getMatches().contains(String.valueOf(imageId2)) && imageId2 != 0)
+                    newitem.setMatches(item.getMatches()+item2);
+                if ( !item.getMatches().contains(String.valueOf(imageId3))&& imageId3 != 0)
+                    newitem.setMatches(item.getMatches()+","+item3);
+                if ( !item.getMatches().contains(String.valueOf(imageId4))&& imageId4 != 0)
+                    newitem.setMatches(item.getMatches()+","+item4);
+            }
+        }
+
 
 //        DatabaseManager.getInstance().findItem(DatabaseManager.getInstance().getTable(Item.class), item1, Outfit.this);
        // DatabaseManager.getInstance().getAllItems(DatabaseManager.getInstance().getTable(Item.class), Outfit.this);
@@ -95,6 +123,9 @@ public class Outfit extends Activity implements DatabaseOperationStatus{
 
         Log.d(TAG, "And before insert, newvalue has path : " + newitem.getPhoto_path());
 
+
+        DatabaseManager.getInstance().deleteItem(DatabaseManager.getInstance().getTable(Item.class), item1, Outfit.this);
+        newitem.set_id(item1.get_id());
         DatabaseManager.getInstance().insertItem(DatabaseManager.getInstance().getTable(Item.class), newitem, Outfit.this);
 
 //            newitem.setPhoto_path(item1.getPhoto_path());
@@ -113,7 +144,7 @@ public class Outfit extends Activity implements DatabaseOperationStatus{
 //
 //
 //
-//        Log.d(TAG, String.valueOf(imageId1));
+        Log.d(TAG, String.valueOf(imageId1));
             // fill imageViews
             imageView1.setImageBitmap(imageBmp1);
             imageView2.setImageBitmap(imageBmp2);
@@ -151,25 +182,13 @@ public class Outfit extends Activity implements DatabaseOperationStatus{
 
     @Override
     public void onComplete(final ArrayList result) {
-        arrayOfItems = result;
+      //  arrayOfItems = result;
 
 //        this.runOnUiThread(new Runnable() {
 //            @Override
 //            public void run() {
 
-                Log.d(TAG, "Caut item1 cu id :"+item1.get_id());
-                for (Item i : arrayOfItems) {
-                    if (i.get_id() == item1.get_id()) {
-                        newitem.setPhoto_path(i.getPhoto_path());
-                        newitem.setLast_used_date(i.getLast_used_date());
-                        newitem.setRegister_date(i.getRegister_date());
-                        newitem.setCategory_id(i.getCategory_id());
-                        newitem.setStyle_id((i.getStyle_id()));
-                        newitem.setMatches(i.getMatches() + "," + imageId2);
-                        Log.d(TAG, "Am format new Item :"+ newitem.getPhoto_path());
-                    }
-                }
-//
+
 //            }
 //        });
 
