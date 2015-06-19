@@ -1,9 +1,10 @@
 package com.example.user.firstsqliteapp;
 
 import android.app.Application;
-import android.support.multidex.MultiDexApplication;
 
 import com.example.user.firstsqliteapp.database.DatabaseManager;
+
+
 
 import java.util.ArrayList;
 
@@ -13,7 +14,7 @@ import java.util.ArrayList;
  */
 
 
-public class MyApp extends MultiDexApplication{
+public class MyApp extends Application{
 
     private static MyApp sInstance = null;
 
@@ -35,6 +36,8 @@ public class MyApp extends MultiDexApplication{
      */
     private void ensureDatabase() {
         DatabaseManager.getInstance().initDatabase(getApplicationContext());
+
+
     }
 
     @Override

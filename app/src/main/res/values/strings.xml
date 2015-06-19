@@ -15,5 +15,7 @@
     <string name="pick_category">Pick a category :</string>
     <string name="done">Done</string>
     <string name="cancel">Cancel</string>
+    <string name="pick_color">Choose colors</string>
+    <string name="pick_style">Choose the style:</string>
 
 </resources>

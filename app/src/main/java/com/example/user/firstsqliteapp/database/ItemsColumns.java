@@ -11,6 +11,9 @@ public interface ItemsColumns extends BaseColumns{
     String REG = "register_date";
     String LAST = "last_used_date";
     String URL = "photo_url";
+    String COL = "colors";
+    String MATCH = "matches";
 
-    String[] ALL_COLUMNS = new String[] {ID,CAT,STYLE, REG, LAST, URL};
+
+    String[] ALL_COLUMNS = new String[] {ID,CAT,STYLE, REG, LAST, URL, COL, MATCH};
 }

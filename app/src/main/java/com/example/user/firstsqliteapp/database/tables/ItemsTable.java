@@ -3,11 +3,13 @@ package com.example.user.firstsqliteapp.database.tables;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.util.Log;
 
 import com.example.user.firstsqliteapp.data.Item;
 import com.example.user.firstsqliteapp.database.DBTable;
 import com.example.user.firstsqliteapp.database.ItemsColumns;
+import com.example.user.firstsqliteapp.utils.TextUtils;
 
 import java.util.ArrayList;
 
@@ -94,51 +96,52 @@ public class ItemsTable extends DBTable<Item> implements ItemsColumns {
         values.put(REG, item.getRegister_date());
         values.put(LAST, item.getLast_used_date());
         values.put(URL, item.getPhoto_path());
-
+        values.put(COL, item.getColors());
+        values.put(MATCH, item.getMatches());
         Log.d(TAG, "populate with Id: " + item.get_id() );
         return values;
     }
 
     @Override
-    protected Item findItem(Item user) {
-//        mDatabase.beginTransaction();
-//        Item result = new Item();
-//
-//        try {
-//            String whereClause;
-//
-//            if (user.getUsername()!=""&& user.getInitials() != "") {
-//                //We have both columns available
-//                whereClause = String.format(TextUtils.FORMAT_STRING_WHERE_CLAUSE_DOUBLE_COLUMNS,
-//                        USR, DatabaseUtils.sqlEscapeString(user.getUsername()),
-//                        INIT, DatabaseUtils.sqlEscapeString(user.getInitials()));
-//
-//            } else if (user.getUsername()!="" && user.getInitials() == "") {
+    protected Item findItem(Item item) {
+        mDatabase.beginTransaction();
+        Item result = new Item();
+
+        try {
+            String whereClause = "";
+
+            if (item.get_id()!= -1) {
+                //We have both columns available
+                whereClause = String.format(TextUtils.FORMAT_STRING_WHERE_CLAUSE_DOUBLE_COLUMNS,
+                        ID, DatabaseUtils.sqlEscapeString(String.valueOf(item.get_id())));
+
+            }
+// else if (user.getUsername()!="" && user.getInitials() == "") {
 //                //We have just a ro word available
 //                whereClause = String.format(TextUtils.FORMAT_STRING_WHERE_CLAUSE_SINGLE_COLUMN,
 //                        USR, DatabaseUtils.sqlEscapeString(user.getUsername()));
-//
+
 //            } else {
 //                //We have only es word
 //
 //                whereClause = String.format(TextUtils.FORMAT_STRING_WHERE_CLAUSE_SINGLE_COLUMN,
 //                        USR, DatabaseUtils.sqlEscapeString(user.getUsername()));
 //            }
-//
-//            Cursor cursor = mDatabase.query(mTableName, null, whereClause, null, null, null, null, null);
-//            if (cursor != null && cursor.moveToFirst()) {
-//                result = new User(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3));
-//            }
-//            if (cursor != null) {
-//                cursor.close();
-//            }
-//            mDatabase.setTransactionSuccessful();
-//        } finally {
-//            mDatabase.endTransaction();
-//        }
-//
-//        return result;
-        return null;
+
+            Cursor cursor = mDatabase.query(mTableName, null, whereClause, null, null, null, null, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                result = new Item(cursor.getInt(0), cursor.getInt(1), cursor.getInt(2), cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getString(7));
+            }
+            if (cursor != null) {
+                cursor.close();
+            }
+            mDatabase.setTransactionSuccessful();
+        } finally {
+            mDatabase.endTransaction();
+        }
+
+        return result;
+//        return null;
 
     }
 
@@ -147,26 +150,33 @@ public class ItemsTable extends DBTable<Item> implements ItemsColumns {
 
     @Override
     protected void updateItem(Item item1, Item item2) {
-//        mDatabase.beginTransaction();
-//
-//        try {
-//            String whereClause;
-//
-//            if (user1.getId() != -1) {
-//                //We have the id column
-//                whereClause = String.format(TextUtils.FORMAT_STRING_WHERE_CLAUSE_SINGLE_COLUMN,
-//                        ID, DatabaseUtils.sqlEscapeString(String.valueOf(user1.getId())));
-//            }
-//
-//            String strFilter = "_id=" + 4;
-//            ContentValues args = new ContentValues();
-//            args.put(ADDR, "new address");
-//            args.put(USR, "new user");
-//            mDatabase.update(mTableName, args, strFilter, null);
-//            mDatabase.setTransactionSuccessful();
-//        } finally {
-//            mDatabase.endTransaction();
-//        }
+        mDatabase.beginTransaction();
+
+        try {
+            String whereClause;
+            whereClause="";
+            if (item1.get_id() != -1) {
+                //We have the id column
+                whereClause = String.format(TextUtils.FORMAT_STRING_WHERE_CLAUSE_SINGLE_COLUMN,
+                        ID, DatabaseUtils.sqlEscapeString(String.valueOf(item1.get_id())));
+            }
+
+            String strFilter = "_id=" + 4;
+            ContentValues args = new ContentValues();
+
+            args.put(CAT, item2.getCategory_id());
+            args.put(STYLE, item2.getStyle_id());
+            args.put(REG, item2.getRegister_date());
+            args.put(LAST, item2.getLast_used_date());
+            args.put(URL, item2.getPhoto_path());
+            args.put(COL,item2.getColors());
+            args.put(MATCH, item2.getMatches());
+
+            mDatabase.update(mTableName, args, whereClause , null);
+            mDatabase.setTransactionSuccessful();
+        } finally {
+            mDatabase.endTransaction();
+        }
     }
 
 
@@ -190,7 +200,7 @@ public class ItemsTable extends DBTable<Item> implements ItemsColumns {
             cursor.moveToFirst();
             if (cursor != null) {
                 while (!cursor.isAfterLast()) {
-                    results.add(new Item(cursor.getInt(0), cursor.getInt(1), cursor.getInt(2), cursor.getString(3), cursor.getString(4), cursor.getString(5)));
+                    results.add(new Item(cursor.getInt(0), cursor.getInt(1), cursor.getInt(2), cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getString(7)));
               //      Log.d(TAG, "id:" + cursor.getString(0) + "  cat_id:" + cursor.getString(1) + "  style_id:" + cursor.getString(2) + "  registered:" + cursor.getString(3) + "  last_used:" + cursor.getString(4) + "  URI:" + cursor.getString(5) );
                     cursor.moveToNext();
                 }

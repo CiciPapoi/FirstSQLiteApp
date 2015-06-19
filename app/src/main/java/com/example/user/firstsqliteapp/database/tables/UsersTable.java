@@ -159,7 +159,7 @@ public class UsersTable extends DBTable<User> implements UsersColumns {
                         ID, DatabaseUtils.sqlEscapeString(String.valueOf(user1.getId())));
             }
 
-            String strFilter = "_id=" + 4;
+            String strFilter = "_id=" + user1.getId();
             ContentValues args = new ContentValues();
             args.put(ADDR, "new address");
             args.put(USR, "new user");

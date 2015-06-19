@@ -20,7 +20,7 @@ android {
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
-        multiDexEnabled true
+        //multiDexEnabled true
 
     }
     buildTypes {
@@ -29,9 +29,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    dexOptions {
-        incremental true
-    }
+//    dexOptions {
+//        incremental true
+//    }
 }
 
 
@@ -41,9 +41,9 @@ dependencies {
     compile('com.android.support:appcompat-v7:22.1.0')
 
 //    compile 'org.apache.mahout:mahout-core:0.4'
-    compile('org.apache.mahout:mahout-core:0.4') {
-        exclude module: 'google-collections'
-    }
+//    compile('org.apache.mahout:mahout-core:0.4') {
+//        exclude module: 'google-collections'
+//    }
 
-    compile 'com.android.support:multidex:1.0.0'
+   // compile 'com.android.support:multidex:1.0.0'
 }

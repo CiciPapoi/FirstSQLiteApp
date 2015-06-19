@@ -25,6 +25,7 @@
         <activity android:name=".activities.DisplayImageActivity"> </activity>
         <activity android:name=".activities.CameraActivity"> </activity>
         <activity android:name=".activities.FirstActivity"> </activity>
+        <activity android:name=".activities.Outfit"> </activity>
 
     </application>
 

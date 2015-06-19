@@ -14,6 +14,7 @@ import com.example.user.firstsqliteapp.database.tables.CategoryTable;
 import com.example.user.firstsqliteapp.database.tables.ItemsTable;
 import com.example.user.firstsqliteapp.database.tables.UsersTable;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -143,7 +144,9 @@ public class ApplicationDB extends SQLiteOpenHelper {
         try{
             String myPath = DATABASE_PATH + DATABASE_NAME;
 
-            checkDB = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READWRITE);
+            File file = new File(myPath);
+            if (file.exists() && !file.isDirectory())
+                checkDB = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READWRITE);
             Log.d(TAG, "I opened the Database");
         }catch(SQLiteException e){
             // database does not exist yet

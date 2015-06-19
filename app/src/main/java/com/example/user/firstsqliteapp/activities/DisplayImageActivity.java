@@ -57,8 +57,8 @@ public class DisplayImageActivity extends Activity implements DatabaseOperationS
                     Item deletedItem = new Item();
                     deletedItem.set_id(imageId);
 
-                    MyApp myapp = MyApp.getInstance();
-                    myapp.myGlobalArray.remove(new Integer((int)deletedItem.getCategory_id()));
+                 //   MyApp myapp = MyApp.getInstance();
+//                    myapp.myGlobalArray.remove(deletedItem);
 
                     DatabaseManager.getInstance().deleteItem(DatabaseManager.getInstance().getTable(Item.class),deletedItem,DisplayImageActivity.this);
 
@@ -69,7 +69,6 @@ public class DisplayImageActivity extends Activity implements DatabaseOperationS
                     finish();
                 }
             });
-
         }
 
     @Override

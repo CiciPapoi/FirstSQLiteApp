@@ -77,6 +77,9 @@ public class ItemsListActivity extends ListActivity implements DatabaseOperation
                 imagePath = arrayOfItems.get(position).getPhoto_path();
                 imageId = arrayOfItems.get(position).get_id();
 
+                //for debug
+                long categ = arrayOfItems.get(position).getCategory_id();
+
                 Log.d(TAG ,"before sending: " + imagePath + "-" + imageId);
 
 
