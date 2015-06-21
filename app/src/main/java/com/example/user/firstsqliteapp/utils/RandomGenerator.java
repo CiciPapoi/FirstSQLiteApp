@@ -3,6 +3,7 @@ package com.example.user.firstsqliteapp.utils;
 /**
  * Created by user on 04.06.2015.
  */
+import com.example.user.firstsqliteapp.MyApp;
 import com.example.user.firstsqliteapp.data.Item;
 
 import java.util.ArrayList;
@@ -21,9 +22,12 @@ public class RandomGenerator
     {
         if (catalogue.size() == 0)
             return null;
-
-        int index = randomGenerator.nextInt(catalogue.size());
+        int index = 0;
+        index = randomGenerator.nextInt(catalogue.size());
+        while ( index == MyApp.getInstance().prev )
+            index = randomGenerator.nextInt(catalogue.size());
         Item item = (Item) catalogue.get(index);
+        MyApp.getInstance().prev = index;
         return item;
     }
 }

@@ -1,5 +1,5 @@
 package com.example.user.firstsqliteapp.activities;
-/**
+/*
 * Created by user on 22.05.2015.
 */
 import java.io.ByteArrayInputStream;
@@ -35,11 +35,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.user.firstsqliteapp.R;
 import com.example.user.firstsqliteapp.data.Item;
 import com.example.user.firstsqliteapp.database.DatabaseManager;
 import com.example.user.firstsqliteapp.database.DatabaseOperationStatus;
+import com.example.user.firstsqliteapp.utils.ConversionFct;
 
 
 public class ItemsListActivity extends ListActivity implements DatabaseOperationStatus {
@@ -56,11 +58,12 @@ public class ItemsListActivity extends ListActivity implements DatabaseOperation
     //var for Logcat
     private static final String TAG = ItemsListActivity.class.getSimpleName();
 
+    ConversionFct convertor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        convertor = new ConversionFct();
        // setContentView(R.layout.activity_items);
 
 
@@ -141,7 +144,11 @@ public class ItemsListActivity extends ListActivity implements DatabaseOperation
 
                     case R.id.item_delete:
                         nr = 0;
+                       // mAdapter.deleteElem();
+
                         mAdapter.clearSelection();
+
+
                         mode.finish();
                 }
                 return true;
@@ -254,7 +261,7 @@ public class ItemsListActivity extends ListActivity implements DatabaseOperation
                 viewHolder = (ViewHolder) convertView.getTag();
             }
 
-            convertView.setBackgroundColor(getResources().getColor(android.R.color.background_light)); //default color
+            convertView.setBackgroundColor(getResources().getColor(R.color.myyellow));//(android.R.color.background_light)); //default color
 
             if (mSelection.get(position) != null) {
                 convertView.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_light));// this is a selected position so make it red
@@ -279,16 +286,43 @@ public class ItemsListActivity extends ListActivity implements DatabaseOperation
             options.inSampleSize = 10;
             Bitmap bmp = BitmapFactory.decodeStream(in, null, options);
 
-            viewHolder.photo.setImageBitmap(bmp);
-            viewHolder.last_used_date.setText(item.getLast_used_date());
+            Bitmap rotatedBitmap4 = convertor.getBmpRotated(item, bmp);
+            viewHolder.photo.setImageBitmap(rotatedBitmap4);
+
+
+           // viewHolder.photo.setImageBitmap(bmp);
+            if ( item.getLast_used_date() == null )
+                viewHolder.last_used_date.setText("You never worn it!");
+            else
+                viewHolder.last_used_date.setText("Last worn: \n"+item.getLast_used_date());
             // Return the completed view to render on screen
             return convertView;
 
         }
+
+
+//        public void deleteElem(){
+//            Set<Integer> s = getCurrentCheckedPosition();
+//            String finals = "";
+//            Item itemToBeDeleted = new Item();
+//            for ( Integer i : s ) {
+//                imageId = arrayOfItems.get(i).get_id();
+//                itemToBeDeleted.set_id(imageId);
+//
+//                DatabaseManager.getInstance().deleteItem(DatabaseManager.getInstance().getTable(Item.class), itemToBeDeleted, ItemsListActivity.this);
+//            }
+//            Toast toast = Toast.makeText(ItemsListActivity.this,"Successfully deleted!" ,Toast.LENGTH_SHORT);
+//            toast.show();
+//            notifyDataSetChanged();
+//
+//        }
+
+
     }
 
     @Override
     public void onComplete(Object result) {
+
 
     }
 
@@ -309,8 +343,6 @@ public class ItemsListActivity extends ListActivity implements DatabaseOperation
                 setListAdapter(mAdapter);
             }
         });
-
-
     }
 
     @Override

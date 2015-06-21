@@ -74,7 +74,7 @@ public class Outfit extends Activity implements DatabaseOperationStatus{
         /*
                 Get the array of items
          */
-       ArrayList<Item> ps =  intent.getParcelableArrayListExtra("array");
+        ArrayList<Item> ps =  intent.getParcelableArrayListExtra("array");
         int k = 0;
         for (Object i : ps) {
             arrayOfItems.add((Item)i);
@@ -96,7 +96,7 @@ public class Outfit extends Activity implements DatabaseOperationStatus{
 
 
         current = 1;  newitem = new Item();
-
+        //Search the item1 to update
         for ( Item item : arrayOfItems ) {
             if ( item.get_id() == item1.get_id() ) {
                 newitem.setCategory_id(item.getCategory_id());
@@ -105,13 +105,16 @@ public class Outfit extends Activity implements DatabaseOperationStatus{
                 newitem.setLast_used_date(dateToString(new Date(), "yyyy-MM-dd-hh-mm-ss"));
                 newitem.setPhoto_path(item.getPhoto_path());
                 newitem.setColors(item.getColors());
-
-                if ( !item.getMatches().contains(String.valueOf(imageId2)) && imageId2 != 0)
-                    newitem.setMatches(item.getMatches()+item2);
+//                if ( !item.getMatches().contains(String.valueOf(imageId2)) && imageId2 != 0)
+//                    newitem.setMatches(item.getMatches()+item2.get_id()+",");
                 if ( !item.getMatches().contains(String.valueOf(imageId3))&& imageId3 != 0)
-                    newitem.setMatches(item.getMatches()+","+item3);
-                if ( !item.getMatches().contains(String.valueOf(imageId4))&& imageId4 != 0)
-                    newitem.setMatches(item.getMatches()+","+item4);
+                    newitem.setMatches(item.getMatches()+item3.get_id()+",");
+                else
+                    newitem.setMatches(item.getMatches());
+//                if ( !item.getMatches().contains(String.valueOf(imageId4))&& imageId4 != 0)
+//                    newitem.setMatches(item.getMatches()+item4.get_id()+",");
+
+                break;
             }
         }
 
@@ -121,12 +124,54 @@ public class Outfit extends Activity implements DatabaseOperationStatus{
 
 
 
-        Log.d(TAG, "And before insert, newvalue has path : " + newitem.getPhoto_path());
+        Log.d(TAG, "And before update, newvalue has path : " + newitem.getPhoto_path());
 
 
-        DatabaseManager.getInstance().deleteItem(DatabaseManager.getInstance().getTable(Item.class), item1, Outfit.this);
-        newitem.set_id(item1.get_id());
-        DatabaseManager.getInstance().insertItem(DatabaseManager.getInstance().getTable(Item.class), newitem, Outfit.this);
+        DatabaseManager.getInstance().updateItem(DatabaseManager.getInstance().getTable(Item.class), item1, newitem, Outfit.this);
+
+        //Update the last_worn_date for the other items too
+        if(item2!=null) {
+            newitem = new Item();
+            for (Item item : arrayOfItems) {
+                if (item.get_id() == item2.get_id()) {
+                    newitem.setLast_used_date(dateToString(new Date(), "yyyy-MM-dd-hh-mm-ss"));
+                    newitem.setMatches(item.getMatches());
+                }
+            }
+            DatabaseManager.getInstance().updateItem(DatabaseManager.getInstance().getTable(Item.class), item2, newitem, Outfit.this);
+
+        }
+
+
+        if (item3!=null) {
+            newitem = new Item();
+            for (Item item : arrayOfItems) {
+                if (item.get_id() == item3.get_id()) {
+                    newitem.setLast_used_date(dateToString(new Date(), "yyyy-MM-dd-hh-mm-ss"));
+                    newitem.setMatches(item.getMatches());
+                }
+            }
+            DatabaseManager.getInstance().updateItem(DatabaseManager.getInstance().getTable(Item.class), item3, newitem, Outfit.this);
+        }
+
+
+        if (item4!= null) {
+            newitem = new Item();
+            for (Item item : arrayOfItems) {
+                if (item.get_id() == item4.get_id()) {
+                    newitem.setLast_used_date(dateToString(new Date(), "yyyy-MM-dd-hh-mm-ss"));
+                    newitem.setMatches(item.getMatches());
+                }
+            }
+            DatabaseManager.getInstance().updateItem(DatabaseManager.getInstance().getTable(Item.class), item4, newitem, Outfit.this);
+        }
+
+
+
+
+//        DatabaseManager.getInstance().deleteItem(DatabaseManager.getInstance().getTable(Item.class), item1, Outfit.this);
+//        newitem.set_id(item1.get_id());
+//        DatabaseManager.getInstance().insertItem(DatabaseManager.getInstance().getTable(Item.class), newitem, Outfit.this);
 
 //            newitem.setPhoto_path(item1.getPhoto_path());
 //            newitem.setLast_used_date(item1.getLast_used_date());

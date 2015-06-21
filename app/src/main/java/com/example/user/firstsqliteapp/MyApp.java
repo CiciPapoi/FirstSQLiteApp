@@ -20,8 +20,7 @@ public class MyApp extends Application{
 
     // global vars
     public ArrayList<Integer> myGlobalArray = null;
-
-
+    public int prev = -1;
     public static MyApp getInstance() {
         return sInstance;
     }

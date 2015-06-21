@@ -55,7 +55,9 @@ public class FirstActivity extends Activity implements DatabaseOperationStatus {
     private long img1Id, img2Id, img3Id, img4Id;
     boolean itemsFor1, itemsFor2, itemsFor3, itemsFor4;
     Intent myIntent1;
-
+    Item item1, item2, item3, item4;
+    long prev1, prev2, prev3, prev4;
+    ArrayList<Integer> list2;
 
     //var for Logcat
     private static final String TAG = FirstActivity.class.getSimpleName();
@@ -119,27 +121,55 @@ public class FirstActivity extends Activity implements DatabaseOperationStatus {
             @Override
             public void onClick(View v) {
 //                Start ItemsList class
-                myIntent1 = new Intent(FirstActivity.this, Outfit.class); // (action to be performed, data to operate with)
-                myIntent1.putExtra("image1Bmp", rotatedBitmap1);
-                myIntent1.putExtra("image2Bmp", rotatedBitmap2);
-                myIntent1.putExtra("image3Bmp", rotatedBitmap3);
-                myIntent1.putExtra("image4Bmp", rotatedBitmap4);
-                myIntent1.putExtra("image1Id", img1Id);
-                myIntent1.putExtra("image2Id", img2Id);
-                myIntent1.putExtra("image3Id", img3Id);
-                myIntent1.putExtra("image4Id", img4Id);
-                myIntent1.putParcelableArrayListExtra("array", arrayOfItems);  // ("array", arrayOfItems);
-                startActivity(myIntent1);
+
+              if ( itemsFor1 == true ) {
+                  myIntent1 = new Intent(FirstActivity.this, Outfit.class); // (action to be performed, data to operate with)
+                  myIntent1.putExtra("image1Bmp", rotatedBitmap1);
+                  myIntent1.putExtra("image2Bmp", rotatedBitmap2);
+                  myIntent1.putExtra("image3Bmp", rotatedBitmap3);
+                  myIntent1.putExtra("image4Bmp", rotatedBitmap4);
+                  myIntent1.putExtra("image1Id", img1Id);
+                  myIntent1.putExtra("image2Id", img2Id);
+                  myIntent1.putExtra("image3Id", img3Id);
+                  myIntent1.putExtra("image4Id", img4Id);
+                  myIntent1.putParcelableArrayListExtra("array", arrayOfItems);  // ("array", arrayOfItems);
+                  startActivity(myIntent1);
+              }
+                else{
+                  Toast t = Toast.makeText(FirstActivity.this, "Please choose a top for your outfit!",Toast.LENGTH_SHORT);
+                  t.show();
+              }
             }
         });
-
-
     }
 
     public void clickImage1(View v) {
         if (itemsFor1 == false) {
             Intent myIntent1 = new Intent(FirstActivity.this, CameraActivity.class);
             startActivity(myIntent1);
+        }
+
+        else {
+            //Compute nr of items of categ3
+            int nrOfCateg1 = 0;
+            for (Item i : arrayOfItems) {
+                if (i.getCategory_id() == 4 || i.getCategory_id() == 6)
+                    nrOfCateg1++;
+            }
+            if (nrOfCateg1 == 1 ){
+                Toast toast = Toast.makeText(FirstActivity.this, "You have just one item for this part.\n Add more clothes for upper-side!", Toast.LENGTH_SHORT);
+                toast.show();
+            }else {
+                item1 = randomGenerator.anyItem(arrayOfItems);
+                while (item1.getCategory_id() != 4 && item1.getCategory_id() != 6) {
+                    item1 = randomGenerator.anyItem(arrayOfItems);
+                }
+                Bitmap bmp;
+                bmp = convertor.pathToBmp(item1.getPhoto_path());
+                rotatedBitmap1 = convertor.getBmpRotated(item1, bmp);
+                imageview1.setImageBitmap(rotatedBitmap1);
+                img1Id = item1.get_id();
+            }
         }
     }
 
@@ -148,12 +178,59 @@ public class FirstActivity extends Activity implements DatabaseOperationStatus {
             Intent myIntent1 = new Intent(FirstActivity.this, CameraActivity.class);
             startActivity(myIntent1);
         }
+        else {
+            //Compute nr of items of categ3
+            int nrOfCateg2 = 0;
+            for (Item i : arrayOfItems) {
+                if (i.getCategory_id() == 1 )
+                    nrOfCateg2++;
+            }
+            if (nrOfCateg2 == 1 ){
+                Toast toast = Toast.makeText(FirstActivity.this, "You have just one item for this part.\n Add more accessories!", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+
+            else {
+                item2 = randomGenerator.anyItem(arrayOfItems);
+                while (item2.getCategory_id() != 1)
+                    item2 = randomGenerator.anyItem(arrayOfItems);
+                Bitmap bmp;
+                bmp = convertor.pathToBmp(item2.getPhoto_path());
+                rotatedBitmap2 = convertor.getBmpRotated(item2, bmp);
+                imageview2.setImageBitmap(rotatedBitmap2);
+                img2Id = item2.get_id();
+            }
+        }
     }
 
     public void clickImage3(View v) {
         if (itemsFor3 == false) {
             Intent myIntent1 = new Intent(FirstActivity.this, CameraActivity.class);
             startActivity(myIntent1);
+
+        }
+        else {
+            //Compute nr of items of categ3
+            int nrOfCateg3 = 0;
+            for (Item i : arrayOfItems) {
+                if (i.getCategory_id() == 2 || i.getCategory_id() == 3 || i.getCategory_id() == 5)
+                    nrOfCateg3++;
+            }
+            if (nrOfCateg3 == 1 ){
+                Toast toast = Toast.makeText(FirstActivity.this, "You have just one item for this part.\n Add more!", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+            item3 = randomGenerator.anyItem(arrayOfItems);
+            while ( item3.getCategory_id() != 2 && item3.getCategory_id() != 3 && item3.getCategory_id() != 5 ) {
+                    item3 = randomGenerator.anyItem(arrayOfItems);
+            }
+            Bitmap bmp;
+            bmp = convertor.pathToBmp(item3.getPhoto_path());
+            rotatedBitmap3 = convertor.getBmpRotated(item3, bmp);
+            imageview3.setImageBitmap(rotatedBitmap3);
+            img3Id = item3.get_id();
+            prev3 = item3.get_id();
+
         }
     }
 
@@ -162,8 +239,34 @@ public class FirstActivity extends Activity implements DatabaseOperationStatus {
             Intent myIntent1 = new Intent(FirstActivity.this, CameraActivity.class);
             startActivity(myIntent1);
         }
+        else {
+            //Compute nr of items of categ3
+            int nrOfCateg4 = 0;
+            for (Item i : arrayOfItems) {
+                if (i.getCategory_id() == 9)
+                    nrOfCateg4++;
+            }
+            if (nrOfCateg4 == 1 ){
+                Toast toast = Toast.makeText(FirstActivity.this, "You have just one item for this part.\n Add more shoes!", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+            item4 = randomGenerator.anyItem(arrayOfItems);
+            while ( item4.getCategory_id() != 9 ) {
+                item4 = randomGenerator.anyItem(arrayOfItems);
+            }
+            Bitmap bmp;
+            bmp = convertor.pathToBmp(item3.getPhoto_path());
+            rotatedBitmap4 = convertor.getBmpRotated(item3, bmp);
+            imageview4.setImageBitmap(rotatedBitmap4);
+            img4Id = item4.get_id();
+        }
     }
 
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+    }
 
     @Override
     protected void onStart() {
@@ -221,7 +324,7 @@ public class FirstActivity extends Activity implements DatabaseOperationStatus {
                         @Override
                         public void run() {
                             //Fill image1 ( upper side clothing items )
-                            Item item1, item2, item3, item4;
+
                             Bitmap bmp;
                             ArrayList<Integer> list1 = new ArrayList<Integer>();
                             list1.add(new Integer(4));
@@ -230,7 +333,7 @@ public class FirstActivity extends Activity implements DatabaseOperationStatus {
                             item1 = randomGenerator.anyItem(arrayOfItems);
                             if (convertor.existsCategory(list1, arrayOfCategories) == false) {
                                 itemsFor1 = false;
-//                                imageview1.setImageResource(R.drawable.);
+                                imageview1.setImageResource(R.mipmap.tops);
                             } else {    // if i have have items of categ: upper side ( id 4 / 6)
                                 itemsFor1 = true;
                                 while (item1.getCategory_id() != 4 && item1.getCategory_id() != 6)
@@ -241,15 +344,15 @@ public class FirstActivity extends Activity implements DatabaseOperationStatus {
                                 img1Id = item1.get_id();
                             }
 
-
                             // Fill imageview2
 
-                            ArrayList<Integer> list2 = new ArrayList<Integer>();
+                            list2 = new ArrayList<Integer>();
                             list2.add(new Integer(1));
                             //try getting a first random item and then check if it is of desired category
                             item2 = randomGenerator.anyItem(arrayOfItems);
                             if (convertor.existsCategory(list2,arrayOfCategories) == false) {
                                 itemsFor2 = false;
+                                imageview2.setImageResource(R.mipmap.accessories2);
                             } else {
 //                                // we have for sure at least one piece of accessorize in db
 
@@ -261,6 +364,7 @@ public class FirstActivity extends Activity implements DatabaseOperationStatus {
                                 rotatedBitmap2 = convertor.getBmpRotated(item2, bmp);
                                 imageview2.setImageBitmap(rotatedBitmap2);
                                 img2Id = item2.get_id();
+                                prev2 = img2Id;
                             }
 
                             // Fill imageview3
@@ -273,6 +377,7 @@ public class FirstActivity extends Activity implements DatabaseOperationStatus {
 
                             if (convertor.existsCategory(list3,arrayOfCategories) == false) {
                                 itemsFor3 = false;
+                                imageview3.setImageResource(R.mipmap.bottom);
                             } else {
 
                                 //We have for sure at least one piece of pants or skirt in db
@@ -290,12 +395,12 @@ public class FirstActivity extends Activity implements DatabaseOperationStatus {
                                 Item itemFromMatches;
                                 if (itemsFor1 == true)//check if exists an item of categ1, to match with
                                 {
-                                    if (item1.getMatches() != "")  // we have previous matches
+                                    if (item1.getMatches().contains(","))  // we have previous matches
                                     {
                                         for (Item i : arrayOfItems) {
                                             if (i.getCategory_id() == 2 || i.getCategory_id() == 3 || i.getCategory_id() == 5)// is of category 2
                                                 for (String s : item1.getMatches().split(",")) {
-                                                    if (s!="") {
+                                                    if (s != null) {
                                                         // find the item corresponding to current match
                                                         itemFromMatches = getItemWithId(s, arrayOfItems);
                                                         if (i.getStyle_id() == itemFromMatches.getStyle_id())
@@ -303,52 +408,56 @@ public class FirstActivity extends Activity implements DatabaseOperationStatus {
                                                     }
                                                 }
                                         }
-                                    }
-                                    Item finalSuggestion = new Item();
-                                    // Now select from suggestions the item with the oldest last_date_worn
-                                    if ( suggestions.size() == 1) {
-                                        finalSuggestion = suggestions.get(0);
-                                    }
-                                    else{
-                                      //String string = item1.getLast_used_date();
-                                        DateFormat format = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss", Locale.ENGLISH);
-                                        //Date date = format.parse(string);
-                                        //System.out.println(date); // Sat Jan 02 00:00:00 GMT 2010
 
+                                        Item finalSuggestion = new Item();
+                                        // Now select from suggestions the item with the oldest last_date_worn
+                                        if (suggestions.size() == 1) {
+                                            finalSuggestion = suggestions.get(0);
+                                        } else {
+                                            //String string = item1.getLast_used_date();
+                                            DateFormat format = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss", Locale.ENGLISH);
+                                            //Date date = format.parse(string);
 
-                                        // get current date
-                                        Date currentDate = new Date();
-                                        String currentDateString = format.format(currentDate);
+                                            // get current date
+                                            Date currentDate = new Date();
+                                            String currentDateString = format.format(currentDate);
 
+                                            // Compute minimum date
+                                            for (Item s : suggestions) {
+                                                Date itemsDate = new Date();
+                                                //get the date of each item from suggestions
+                                                if ( s.getLast_used_date() == null ) {    // never worn it
+                                                    finalSuggestion = s;
+                                                    break;
+                                                }
+                                                else {      // compare the dates
+                                                    try {
+                                                        itemsDate = format.parse(s.getLast_used_date());
+                                                    } catch (ParseException e) {
+                                                        e.printStackTrace();
+                                                    }
 
-                                        for (Item s : suggestions )
-                                        {
-                                            Date itemsDate = new  Date();
-                                            //get the date of each item from suggestions
-                                            try {
-                                                itemsDate = format.parse(s.getLast_used_date());
-                                            } catch (ParseException e) {
-                                                e.printStackTrace();
+                                                    if (currentDate.after(itemsDate)) {
+                                                        currentDate = itemsDate;
+                                                        finalSuggestion = s;
+                                                    }
+                                                }
                                             }
-
-                                            if ( currentDate.after(itemsDate)){
-                                                currentDate = itemsDate;
-                                                finalSuggestion = s;
-                                            }
-
                                         }
-                                    }
+
 
                                     //Fill the imageView now
                                     bmp = convertor.pathToBmp(finalSuggestion.getPhoto_path());
                                     rotatedBitmap3 = convertor.getBmpRotated(finalSuggestion, bmp);
                                     imageview3.setImageBitmap(rotatedBitmap3);
                                     img3Id = finalSuggestion.get_id();
-                                }
-                                else // no mathces existing yet
+
+                                } else // no mathces existing yet
                                 {
                                     //try getting a first random item and then check if it is of desired category
-                                    item3 = randomGenerator.anyItem(arrayOfItems );
+                                    item3 = randomGenerator.anyItem(arrayOfItems);
+                                    while ( item3.getCategory_id() != 2 && item3.getCategory_id() != 3 && item3.getCategory_id() != 5)// is of category 2)
+                                            item3 = randomGenerator.anyItem(arrayOfItems);
                                     suggestions.add(item3);
 
                                     //Fill the imageView now
@@ -356,9 +465,10 @@ public class FirstActivity extends Activity implements DatabaseOperationStatus {
                                     rotatedBitmap3 = convertor.getBmpRotated(item3, bmp);
                                     imageview3.setImageBitmap(rotatedBitmap3);
                                     img3Id = item3.get_id();
-
+                                    prev3 = item3.get_id();
 
                                 }
+                            }
 
                             }
                             // Fill imageview4
@@ -369,6 +479,7 @@ public class FirstActivity extends Activity implements DatabaseOperationStatus {
                             item4 = randomGenerator.anyItem(arrayOfItems);
                             if (convertor.existsCategory(list4, arrayOfCategories) == false) {
                                 itemsFor4 = false;
+                                imageview4.setImageResource(R.mipmap.shoes);
                             } else {
                                 itemsFor4 = true;
                                 while (item4.getCategory_id() != 9)

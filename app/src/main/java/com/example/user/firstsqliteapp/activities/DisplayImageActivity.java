@@ -11,6 +11,7 @@ import android.widget.ImageView;
 
 import com.example.user.firstsqliteapp.MyApp;
 import com.example.user.firstsqliteapp.R;
+import com.example.user.firstsqliteapp.data.Category;
 import com.example.user.firstsqliteapp.data.Item;
 import com.example.user.firstsqliteapp.database.DatabaseManager;
 import com.example.user.firstsqliteapp.database.DatabaseOperationStatus;
@@ -26,6 +27,10 @@ public class DisplayImageActivity extends Activity implements DatabaseOperationS
         ImageView imageDetail;
         long imageId;
         Bitmap theImage;
+        private ArrayList<Item> arrayOfItems;
+        private ArrayList<Category> arrayOfCategories;
+        Item deletedItem;
+        String newmatches;
 
     //var for Logcat
     private static final String TAG = DisplayImageActivity.class.getSimpleName();
@@ -54,19 +59,22 @@ public class DisplayImageActivity extends Activity implements DatabaseOperationS
                      */
                     Log.d(TAG, "deleting image with id : "+String.valueOf(imageId));
 
-                    Item deletedItem = new Item();
+                    deletedItem = new Item();
                     deletedItem.set_id(imageId);
 
                  //   MyApp myapp = MyApp.getInstance();
 //                    myapp.myGlobalArray.remove(deletedItem);
 
-                    DatabaseManager.getInstance().deleteItem(DatabaseManager.getInstance().getTable(Item.class),deletedItem,DisplayImageActivity.this);
+                    DatabaseManager.getInstance().getAllItems(DatabaseManager.getInstance().getTable(Item.class), DisplayImageActivity.this);
 
-                    // /after deleting data go to main page
-                    Intent i = new Intent(DisplayImageActivity.this,
-                            ItemsListActivity.class);
-                    startActivity(i);
-                    finish();
+                    DatabaseManager.getInstance().getAllItems(DatabaseManager.getInstance().getTable(Category.class), DisplayImageActivity.this);
+
+
+
+
+
+
+
                 }
             });
         }
@@ -78,6 +86,56 @@ public class DisplayImageActivity extends Activity implements DatabaseOperationS
 
     @Override
     public void onComplete(ArrayList result) {
+
+        Object o = result.get(0);
+        //---------------Items case----------------
+        if (o instanceof Item)
+            arrayOfItems = result;
+        else // Category case
+            arrayOfCategories = result;
+
+
+        Category categToDecrease = new Category();
+        for ( Item i : arrayOfItems) {
+            if (i.get_id() == imageId) {
+                for (Category c : arrayOfCategories)
+                    if (c.getId() == i.getCategory_id())
+                        categToDecrease.setId(c.getId());
+            }
+        }
+
+        Category updatedCateg = new Category();
+        updatedCateg.setNritems( categToDecrease.getNritems()-1);
+
+
+        DatabaseManager.getInstance().updateItem(DatabaseManager.getInstance().getTable(Category.class),categToDecrease,updatedCateg , DisplayImageActivity.this);
+
+
+        DatabaseManager.getInstance().deleteItem(DatabaseManager.getInstance().getTable(Item.class),deletedItem,DisplayImageActivity.this);
+        // /after deleting data go to main page
+        Intent i = new Intent(DisplayImageActivity.this,
+                ItemsListActivity.class);
+        startActivity(i);
+        finish();
+
+
+
+//        for ( Item item : arrayOfItems){
+//            newmatches = "";
+//            if (  item.getMatches().contains(String.valueOf(deletedItem.get_id()))){
+//                for ( String m : item.getMatches().split(",")){
+//                    if ( m != String.valueOf(deletedItem.get_id()))
+//                        newmatches = newmatches + m + ",";
+//
+//                }
+//                Item upitem = new Item();
+//                upitem.setLast_used_date(item.getLast_used_date());
+//                upitem.setMatches(newmatches);
+//
+//                DatabaseManager.getInstance().updateItem(DatabaseManager.getInstance().getTable(Item.class),item,upitem, DisplayImageActivity.this);
+//
+//            }
+//        }
 
     }
 

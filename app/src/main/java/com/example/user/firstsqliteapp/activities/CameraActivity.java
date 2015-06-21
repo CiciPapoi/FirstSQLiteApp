@@ -25,10 +25,13 @@ import com.example.user.firstsqliteapp.data.Item;
 import com.example.user.firstsqliteapp.database.DatabaseManager;
 import com.example.user.firstsqliteapp.database.DatabaseOperationStatus;
 import com.example.user.firstsqliteapp.dialogs.ColorPickerDialog;
+import com.example.user.firstsqliteapp.utils.ConversionFct;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,7 +40,9 @@ import java.util.Date;
  * Created by user on 27.05.2015.
  */
 public class CameraActivity extends Activity implements DatabaseOperationStatus{
-    private static final int REQUEST_IMAGE = 100;
+    private static final int REQUEST_IMAGE_CAMERA = 100;
+    private static final int REQUEST_IMAGE_GALLERY = 200;
+
     private static final String TAG = "CameraActivity";
 
     TextView text_view_path;
@@ -64,19 +69,51 @@ public class CameraActivity extends Activity implements DatabaseOperationStatus{
         destination = new File(Environment.getExternalStorageDirectory(), name_date + ".jpg");
 
         Button click = (Button) findViewById(R.id.idBtnTakePicture);
+
+
         click.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(destination));
-                startActivityForResult(intent, REQUEST_IMAGE);
+                startActivityForResult(intent, REQUEST_IMAGE_CAMERA);
             }
         });
+
+        Button home = (Button) findViewById(R.id.backButton);
+
+
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CameraActivity.this, FirstActivity.class);
+                startActivity(intent);
+            }
+        });
+
+//        Button gallery = (Button) findViewById(R.id.idBtnTakeFromGalley);
+//
+//        gallery.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent();
+//                intent.setType("image/*");
+//                intent.setAction(Intent.ACTION_GET_CONTENT);
+////                intent.putExtra("return-data", true);
+//                intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(destination));
+//                startActivityForResult(intent, REQUEST_IMAGE_GALLERY);
+//
+//
+//            }
+//        });
+
+
+
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if( requestCode == REQUEST_IMAGE && resultCode == Activity.RESULT_OK ){
+    protected void onActivityResult(final int requestCode, int resultCode, final Intent data) {
+        if( requestCode == REQUEST_IMAGE_CAMERA && resultCode == Activity.RESULT_OK || requestCode == REQUEST_IMAGE_GALLERY && resultCode == Activity.RESULT_OK){
 
 
             //                /*
@@ -201,11 +238,7 @@ public class CameraActivity extends Activity implements DatabaseOperationStatus{
 
         //=========================COLORS DIALOG =====================================================
 
-        colorsDialog.setPositiveButton(R.string.done, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
 
-            }
-        });
 
         categoryDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
@@ -285,19 +318,51 @@ public class CameraActivity extends Activity implements DatabaseOperationStatus{
                             style_dialog.show();
 
                             // Build the item to be added
+                if  ( requestCode == REQUEST_IMAGE_CAMERA ) {
+                    FileInputStream in = null;
+                    try {
+                        in = new FileInputStream(destination);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
 
-                            FileInputStream in = null;
-                            try {
-                                in = new FileInputStream(destination);
-                            } catch (FileNotFoundException e) {
-                                e.printStackTrace();
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inSampleSize = 10;
+                    image_path = destination.getAbsolutePath();
+                    //text_view_path.setText(image_path);
+                    text_view_path.setVisibility(View.VISIBLE);
+                    Bitmap bmp = BitmapFactory.decodeStream(in, null, options);
+                    picture.setImageBitmap(bmp);
+                }
+                if (requestCode == REQUEST_IMAGE_GALLERY ) {
+                    if(data != null)
+                    {
+                        Uri selectedImageUri = data.getData();
+                        image_path = selectedImageUri.getPath();
+                        BitmapFactory.Options options = new BitmapFactory.Options();
+                        options.inSampleSize = 10;
+                        //Bitmap thumbnail = BitmapFactory.decodeFile(image_path, options);
+                        Bitmap bitmap = null;
+                        try {
+                            if (bitmap != null) {
+                                bitmap.recycle();
                             }
-                            BitmapFactory.Options options = new BitmapFactory.Options();
-                            options.inSampleSize = 10;
-                            image_path = destination.getAbsolutePath();
-                            text_view_path.setText(image_path);
-                            Bitmap bmp = BitmapFactory.decodeStream(in, null, options);
-                            picture.setImageBitmap(bmp);
+                            InputStream stream = getContentResolver().openInputStream(
+                                    data.getData());
+                            bitmap = BitmapFactory.decodeStream(stream);
+                            stream.close();
+                            picture.setImageBitmap(bitmap);
+                        } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                        } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    }
+
+                    //
+
+
+                }
 
                             //Create the object
                             Item newItem = new Item(category_bd, style, name_date, null, image_path, colors, "");
@@ -309,7 +374,7 @@ public class CameraActivity extends Activity implements DatabaseOperationStatus{
                             Category oldCat = new Category(category_bd);
 
                             DatabaseManager.getInstance().updateItem(DatabaseManager.getInstance().getTable(Category.class), oldCat ,null,  CameraActivity.this);
-//                            style_dialog.dismiss();
+                            style_dialog.dismiss();
 
                         }
                     });

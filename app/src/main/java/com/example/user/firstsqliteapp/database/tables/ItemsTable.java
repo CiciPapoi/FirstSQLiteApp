@@ -161,15 +161,16 @@ public class ItemsTable extends DBTable<Item> implements ItemsColumns {
                         ID, DatabaseUtils.sqlEscapeString(String.valueOf(item1.get_id())));
             }
 
-            String strFilter = "_id=" + 4;
+            //String strFilter = "_id=" + 4;
+            String strFilter = "_id=" + item1.get_id();
             ContentValues args = new ContentValues();
 
-            args.put(CAT, item2.getCategory_id());
-            args.put(STYLE, item2.getStyle_id());
-            args.put(REG, item2.getRegister_date());
+//            args.put(CAT, item2.getCategory_id());
+//            args.put(STYLE, item2.getStyle_id());
+//            args.put(REG, item2.getRegister_date());
             args.put(LAST, item2.getLast_used_date());
-            args.put(URL, item2.getPhoto_path());
-            args.put(COL,item2.getColors());
+//            args.put(URL, item2.getPhoto_path());
+//            args.put(COL,item2.getColors());
             args.put(MATCH, item2.getMatches());
 
             mDatabase.update(mTableName, args, whereClause , null);

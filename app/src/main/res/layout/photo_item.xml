@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#EEC97b"
     >
 
     <TextView
@@ -11,20 +12,24 @@
         android:id="@+id/item_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="#3C4A53"
         />
 
     <ImageView
-        android:paddingRight="30dp"
+        android:layout_margin="20dp"
         android:id="@+id/item_photo"
-        android:layout_width="80dp"
-        android:layout_height="100dp"
+        android:layout_width="130dp"
+        android:layout_height="140dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
+        android:background="#EEC97b"
         />
     <TextView
         android:paddingRight="30dp"
         android:id="@+id/item_last_used"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Hello"
+        android:layout_gravity="center_vertical"
+        android:textColor="#3C4A53"
         />
 </LinearLayout>
