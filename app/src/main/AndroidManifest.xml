@@ -22,7 +22,10 @@
 
         <activity android:name=".activities.DBOperationsActivity"> </activity>
         <activity android:name=".activities.ItemsListActivity"> </activity>
-        <activity android:name=".activities.DisplayImageActivity"> </activity>
+        <activity
+            android:name=".activities.DisplayImageActivity"
+            android:parentActivityName="com.example.user.firstsqliteapp.activities.FirstActivity" >
+        </activity>
         <activity android:name=".activities.CameraActivity"> </activity>
         <activity android:name=".activities.FirstActivity"> </activity>
         <activity android:name=".activities.Outfit"> </activity>

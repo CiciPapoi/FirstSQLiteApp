@@ -24,8 +24,8 @@ public class RandomGenerator
             return null;
         int index = 0;
         index = randomGenerator.nextInt(catalogue.size());
-        while ( index == MyApp.getInstance().prev )
-            index = randomGenerator.nextInt(catalogue.size());
+//        while ( index == MyApp.getInstance().prev )
+//            index = randomGenerator.nextInt(catalogue.size());
         Item item = (Item) catalogue.get(index);
         MyApp.getInstance().prev = index;
         return item;

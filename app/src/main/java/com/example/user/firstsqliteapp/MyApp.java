@@ -35,8 +35,6 @@ public class MyApp extends Application{
      */
     private void ensureDatabase() {
         DatabaseManager.getInstance().initDatabase(getApplicationContext());
-
-
     }
 
     @Override

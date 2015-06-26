@@ -113,9 +113,9 @@ public class DisplayImageActivity extends Activity implements DatabaseOperationS
 
         DatabaseManager.getInstance().deleteItem(DatabaseManager.getInstance().getTable(Item.class),deletedItem,DisplayImageActivity.this);
         // /after deleting data go to main page
-        Intent i = new Intent(DisplayImageActivity.this,
-                ItemsListActivity.class);
-        startActivity(i);
+//        Intent i = new Intent(DisplayImageActivity.this,
+//                ItemsListActivity.class);
+//        startActivity(i);
         finish();
 
 

@@ -59,12 +59,16 @@ public class FirstActivity extends Activity implements DatabaseOperationStatus {
     long prev1, prev2, prev3, prev4;
     ArrayList<Integer> list2;
 
+    String object = "";
+
     //var for Logcat
     private static final String TAG = FirstActivity.class.getSimpleName();
 
     //UI elements
     ImageView imageview1, imageview2, imageview3, imageview4;
     Button addButton, listItemsButton, getOutfitButton;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -263,10 +267,10 @@ public class FirstActivity extends Activity implements DatabaseOperationStatus {
     }
 
 
-    @Override
-    protected void onResume(){
-        super.onResume();
-    }
+//    @Override
+//    protected void onResume(){
+//        super.onResume();
+//    }
 
     @Override
     protected void onStart() {
@@ -276,12 +280,14 @@ public class FirstActivity extends Activity implements DatabaseOperationStatus {
         /*
             Get all Category elements from db and put them in the ArrayList
          */
+        object= "category";
         DatabaseManager.getInstance().getAllItems(DatabaseManager.getInstance().getTable(Category.class), this);
 
 
         /*
             Get all Item elements from db and put them in the ArrayList
          */
+        object= "item";
         DatabaseManager.getInstance().getAllItems(DatabaseManager.getInstance().getTable(Item.class), this);
 
         Log.d(TAG, "FirstActivity: onStart()");
@@ -315,149 +321,184 @@ public class FirstActivity extends Activity implements DatabaseOperationStatus {
         */
 
 
-            if (result.size() != 0) {
-                Object o = result.get(0);
-                //---------------Items case----------------
-                if (o instanceof Item) {
-                    arrayOfItems = result;
-                    this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            //Fill image1 ( upper side clothing items )
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (result.size() == 0) {
+//                this.runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+                    imageview1.setImageResource(R.mipmap.tops);
+                    imageview2.setImageResource(R.mipmap.accessories2);
+                    imageview3.setImageResource(R.mipmap.bottom);
+                    imageview4.setImageResource(R.mipmap.shoes);
+//                    }
+//                });
+//
+                }
 
-                            Bitmap bmp;
-                            ArrayList<Integer> list1 = new ArrayList<Integer>();
-                            list1.add(new Integer(4));
-                            list1.add(new Integer(6));
-                            //try getting a first random item and then check if it is of desired category
+                if (result.size() != 0) {
+                    Object o = result.get(0);
+                    //---------------Items case----------------
+                    if (o instanceof Item) {
+                        arrayOfItems = result;
+//                    this.runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+                        //Fill image1 ( upper side clothing items )
+
+                        Bitmap bmp;
+                        ArrayList<Integer> list1 = new ArrayList<Integer>();
+                        list1.add(new Integer(4));
+                        list1.add(new Integer(6));
+                        //try getting a first random item and then check if it is of desired category
+
+                        if (convertor.existsCategory(list1, arrayOfCategories) == false) {
+                            itemsFor1 = false;
+                            imageview1.setImageResource(R.mipmap.tops);
+                        } else {    // if i have have items of categ: upper side ( id 4 / 6)
                             item1 = randomGenerator.anyItem(arrayOfItems);
-                            if (convertor.existsCategory(list1, arrayOfCategories) == false) {
-                                itemsFor1 = false;
-                                imageview1.setImageResource(R.mipmap.tops);
-                            } else {    // if i have have items of categ: upper side ( id 4 / 6)
-                                itemsFor1 = true;
-                                while (item1.getCategory_id() != 4 && item1.getCategory_id() != 6)
-                                    item1 = randomGenerator.anyItem(arrayOfItems);
-                                bmp = convertor.pathToBmp(item1.getPhoto_path());
-                                rotatedBitmap1 = convertor.getBmpRotated(item1, bmp);
-                                imageview1.setImageBitmap(rotatedBitmap1);
-                                img1Id = item1.get_id();
-                            }
+                            itemsFor1 = true;
+                            while (item1.getCategory_id() != 4 && item1.getCategory_id() != 6)
+                                item1 = randomGenerator.anyItem(arrayOfItems);
+                            bmp = convertor.pathToBmp(item1.getPhoto_path());
+                            rotatedBitmap1 = convertor.getBmpRotated(item1, bmp);
+                            imageview1.setImageBitmap(rotatedBitmap1);
+                            img1Id = item1.get_id();
+                        }
 
-                            // Fill imageview2
+                        // Fill imageview2
 
-                            list2 = new ArrayList<Integer>();
-                            list2.add(new Integer(1));
-                            //try getting a first random item and then check if it is of desired category
-                            item2 = randomGenerator.anyItem(arrayOfItems);
-                            if (convertor.existsCategory(list2,arrayOfCategories) == false) {
-                                itemsFor2 = false;
-                                imageview2.setImageResource(R.mipmap.accessories2);
-                            } else {
+                        list2 = new ArrayList<Integer>();
+                        list2.add(new Integer(1));
+                        //try getting a first random item and then check if it is of desired category
+
+                        if (convertor.existsCategory(list2, arrayOfCategories) == false) {
+                            itemsFor2 = false;
+                            imageview2.setImageResource(R.mipmap.accessories2);
+                        } else {
 //                                // we have for sure at least one piece of accessorize in db
+                            item2 = randomGenerator.anyItem(arrayOfItems);
+                            itemsFor2 = true;
+                            while (item2.getCategory_id() != 1)
+                                item2 = randomGenerator.anyItem(arrayOfItems);
 
-                                itemsFor2 = true;
-                                while (item2.getCategory_id() != 1)
-                                    item2 = randomGenerator.anyItem(arrayOfItems);
+                            bmp = convertor.pathToBmp(item2.getPhoto_path());
+                            rotatedBitmap2 = convertor.getBmpRotated(item2, bmp);
+                            imageview2.setImageBitmap(rotatedBitmap2);
+                            img2Id = item2.get_id();
+                            prev2 = img2Id;
+                        }
 
-                                bmp = convertor.pathToBmp(item2.getPhoto_path());
-                                rotatedBitmap2 = convertor.getBmpRotated(item2, bmp);
-                                imageview2.setImageBitmap(rotatedBitmap2);
-                                img2Id = item2.get_id();
-                                prev2 = img2Id;
-                            }
+                        // Fill imageview3
 
-                            // Fill imageview3
-
-                            ArrayList<Integer> list3 = new ArrayList<Integer>();
-                            list3.add(new Integer(2));
-                            list3.add(new Integer(3));
-                            list3.add(new Integer(5));
+                        ArrayList<Integer> list3 = new ArrayList<Integer>();
+                        list3.add(new Integer(2));
+                        list3.add(new Integer(3));
+                        list3.add(new Integer(5));
 
 
-                            if (convertor.existsCategory(list3,arrayOfCategories) == false) {
-                                itemsFor3 = false;
-                                imageview3.setImageResource(R.mipmap.bottom);
-                            } else {
+                        if (convertor.existsCategory(list3, arrayOfCategories) == false) {
+                            itemsFor3 = false;
+                            imageview3.setImageResource(R.mipmap.bottom);
+                        } else {
 
-                                //We have for sure at least one piece of pants or skirt in db
-                                itemsFor3 = true;
+                            //We have for sure at least one piece of pants or skirt in db
+                            itemsFor3 = true;
 
                                 /*
                                 while (item.getCategory_id() != 2 && item.getCategory_id() != 3 && item.getCategory_id() != 5)
                                     item = randomGenerator.anyItem(arrayOfItems);
                                 */
 
-                                // Before, we took any random pair of pants / skirt, now we will check which fits
-                                // with the chosen blouse ( with style and color ) by checking the matches
-                                // done by the user till now.
-                                ArrayList<Item> suggestions = new ArrayList<Item>();
-                                Item itemFromMatches;
-                                if (itemsFor1 == true)//check if exists an item of categ1, to match with
+                            // Before, we took any random pair of pants / skirt, now we will check which fits
+                            // with the chosen blouse ( with style and color ) by checking the matches
+                            // done by the user till now.
+                            ArrayList<Item> suggestions = new ArrayList<Item>();
+                            Item itemFromMatches;
+                            if (itemsFor1 == true)//check if exists an item of categ1, to match with
+                            {
+                                if (item1.getMatches().contains(","))  // we have previous matches
                                 {
-                                    if (item1.getMatches().contains(","))  // we have previous matches
-                                    {
-                                        for (Item i : arrayOfItems) {
-                                            if (i.getCategory_id() == 2 || i.getCategory_id() == 3 || i.getCategory_id() == 5)// is of category 2
-                                                for (String s : item1.getMatches().split(",")) {
-                                                    if (s != null) {
-                                                        // find the item corresponding to current match
-                                                        itemFromMatches = getItemWithId(s, arrayOfItems);
+                                    for (Item i : arrayOfItems) {
+                                        suggestions = new ArrayList<Item>();
+                                        if (i.getCategory_id() == 2 || i.getCategory_id() == 3 || i.getCategory_id() == 5)// is of category 2
+                                            for (String s : item1.getMatches().split(",")) {
+                                                if (s != null) {
+                                                    // find the item corresponding to current match
+                                                    itemFromMatches = getItemWithId(s, arrayOfItems);
+                                                    if (itemFromMatches != null)
                                                         if (i.getStyle_id() == itemFromMatches.getStyle_id())
                                                             suggestions.add(i);
-                                                    }
                                                 }
-                                        }
+                                            }
+                                    }
 
-                                        Item finalSuggestion = new Item();
-                                        // Now select from suggestions the item with the oldest last_date_worn
-                                        if (suggestions.size() == 1) {
-                                            finalSuggestion = suggestions.get(0);
-                                        } else {
-                                            //String string = item1.getLast_used_date();
-                                            DateFormat format = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss", Locale.ENGLISH);
-                                            //Date date = format.parse(string);
+                                    Item finalSuggestion = new Item();
+                                    // Now select from suggestions the item with the oldest last_date_worn
+                                    if (suggestions.size() == 1) {
+                                        finalSuggestion = suggestions.get(0);
 
-                                            // get current date
-                                            Date currentDate = new Date();
-                                            String currentDateString = format.format(currentDate);
+                                    } else if (suggestions.size() == 0) { // we had matches, but no suggestions because the items does not exist anymore
+                                        //try getting a first random item and then check if it is of desired category
+                                        item3 = randomGenerator.anyItem(arrayOfItems);
+                                        while (item3.getCategory_id() != 2 && item3.getCategory_id() != 3 && item3.getCategory_id() != 5)// is of category 2)
+                                            item3 = randomGenerator.anyItem(arrayOfItems);
+                                        suggestions.add(item3);
 
-                                            // Compute minimum date
-                                            for (Item s : suggestions) {
-                                                Date itemsDate = new Date();
-                                                //get the date of each item from suggestions
-                                                if ( s.getLast_used_date() == null ) {    // never worn it
+                                        //Fill the imageView now
+                                        bmp = convertor.pathToBmp(item3.getPhoto_path());
+                                        rotatedBitmap3 = convertor.getBmpRotated(item3, bmp);
+                                        imageview3.setImageBitmap(rotatedBitmap3);
+                                        img3Id = item3.get_id();
+                                        prev3 = item3.get_id();
+
+                                    } else {
+                                        //String string = item1.getLast_used_date();
+                                        DateFormat format = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss", Locale.ENGLISH);
+                                        //Date date = format.parse(string);
+
+                                        // get current date
+                                        Date currentDate = new Date();
+                                        String currentDateString = format.format(currentDate);
+
+                                        // Compute minimum date
+                                        for (Item s : suggestions) {
+                                            Date itemsDate = new Date();
+                                            //get the date of each item from suggestions
+                                            if (s.getLast_used_date() == null) {    // never worn it
+                                                finalSuggestion = s;
+                                                break;
+                                            } else {      // compare the dates
+                                                try {
+                                                    itemsDate = format.parse(s.getLast_used_date());
+                                                } catch (ParseException e) {
+                                                    e.printStackTrace();
+                                                }
+
+                                                if (currentDate.after(itemsDate)) {
+                                                    currentDate = itemsDate;
                                                     finalSuggestion = s;
-                                                    break;
-                                                }
-                                                else {      // compare the dates
-                                                    try {
-                                                        itemsDate = format.parse(s.getLast_used_date());
-                                                    } catch (ParseException e) {
-                                                        e.printStackTrace();
-                                                    }
-
-                                                    if (currentDate.after(itemsDate)) {
-                                                        currentDate = itemsDate;
-                                                        finalSuggestion = s;
-                                                    }
                                                 }
                                             }
                                         }
+                                        //Fill the imageView now
+                                        bmp = convertor.pathToBmp(finalSuggestion.getPhoto_path());
+                                        rotatedBitmap3 = convertor.getBmpRotated(finalSuggestion, bmp);
+                                        imageview3.setImageBitmap(rotatedBitmap3);
+                                        img3Id = finalSuggestion.get_id();
+
+                                    }
 
 
-                                    //Fill the imageView now
-                                    bmp = convertor.pathToBmp(finalSuggestion.getPhoto_path());
-                                    rotatedBitmap3 = convertor.getBmpRotated(finalSuggestion, bmp);
-                                    imageview3.setImageBitmap(rotatedBitmap3);
-                                    img3Id = finalSuggestion.get_id();
+
 
                                 } else // no mathces existing yet
                                 {
                                     //try getting a first random item and then check if it is of desired category
                                     item3 = randomGenerator.anyItem(arrayOfItems);
-                                    while ( item3.getCategory_id() != 2 && item3.getCategory_id() != 3 && item3.getCategory_id() != 5)// is of category 2)
-                                            item3 = randomGenerator.anyItem(arrayOfItems);
+                                    while (item3.getCategory_id() != 2 && item3.getCategory_id() != 3 && item3.getCategory_id() != 5)// is of category 2)
+                                        item3 = randomGenerator.anyItem(arrayOfItems);
                                     suggestions.add(item3);
 
                                     //Fill the imageView now
@@ -470,45 +511,44 @@ public class FirstActivity extends Activity implements DatabaseOperationStatus {
                                 }
                             }
 
-                            }
-                            // Fill imageview4
+                        }
+                        // Fill imageview4
 
-                            ArrayList<Integer> list4 = new ArrayList<Integer>();
-                            list4.add(new Integer(9));
-                            //try getting a first random item and then check if it is of desired category
+                        ArrayList<Integer> list4 = new ArrayList<Integer>();
+                        list4.add(new Integer(9));
+                        //try getting a first random item and then check if it is of desired category
+
+                        if (convertor.existsCategory(list4, arrayOfCategories) == false) {
+                            itemsFor4 = false;
+                            imageview4.setImageResource(R.mipmap.shoes);
+                        } else {
                             item4 = randomGenerator.anyItem(arrayOfItems);
-                            if (convertor.existsCategory(list4, arrayOfCategories) == false) {
-                                itemsFor4 = false;
-                                imageview4.setImageResource(R.mipmap.shoes);
-                            } else {
-                                itemsFor4 = true;
-                                while (item4.getCategory_id() != 9)
-                                    item4 = randomGenerator.anyItem(arrayOfItems);
-                                bmp = convertor.pathToBmp(item4.getPhoto_path());
-                                rotatedBitmap4 = convertor.getBmpRotated(item4, bmp);
-                                imageview4.setImageBitmap(rotatedBitmap4);
-                                img4Id = item4.get_id();
-                            }
-
+                            itemsFor4 = true;
+                            while (item4.getCategory_id() != 9)
+                                item4 = randomGenerator.anyItem(arrayOfItems);
+                            bmp = convertor.pathToBmp(item4.getPhoto_path());
+                            rotatedBitmap4 = convertor.getBmpRotated(item4, bmp);
+                            imageview4.setImageBitmap(rotatedBitmap4);
+                            img4Id = item4.get_id();
                         }
-                    });
-                }//end if instanceof
-            else if (o instanceof Category){
-                //-----------------Category case----------------
-                    this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            arrayOfCategories = result;
-
-                        }
-                    });
-
+//
+//                        }
+//                    });
+                    }//end if instanceof
+                    else if (o instanceof Category) {
+                        //-----------------Category case----------------
+//                    this.runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+                        arrayOfCategories = result;
+//                        }
+//                    });
+//
+//            }
+                    }  //last if instance
+                }// if result.size
             }
-            }
-
-
-
-
+        });
     }
 
     @Override

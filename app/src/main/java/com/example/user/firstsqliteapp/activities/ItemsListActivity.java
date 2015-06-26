@@ -102,6 +102,7 @@ public class ItemsListActivity extends ListActivity implements DatabaseOperation
                         DisplayImageActivity.class);
                 intent.putExtra("image_name", bmp);
                 intent.putExtra("image_id", imageId);
+
                 startActivity(intent);
             }
         });
